@@ -1,0 +1,5 @@
+2026-10-06T06:30:53.483Z revalidator6|INFO|STALE_UKEY_DEBUG: ukey=0xfixture dump_seq=3819117 current_dump_seq=3819642 missed_dumps=1
+2026-10-06T06:30:53.983Z revalidator6|INFO|STALE_UKEY_DEBUG: ukey=0xfixture dump_seq=3819117 current_dump_seq=3819642 missed_dumps=2
+2026-10-06T06:30:54.486Z revalidator6|INFO|STALE_UKEY_DEBUG: ukey=0xfixture dump_seq=3819117 current_dump_seq=3819642 missed_dumps=3
+2026-10-06T06:30:54.987Z revalidator6|INFO|STALE_UKEY_DEBUG: ukey=0xfixture dump_seq=3819117 current_dump_seq=3819642 missed_dumps=4
+2026-10-06T06:30:54.988Z revalidator6|WARN|failed to flow_del (No such file or directory) ufid:fixture

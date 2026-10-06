@@ -1,0 +1,3 @@
+revalidate_missing_dp_flow total: 7
+dpif_flow_del total: 56
+dpif_flow_del_error total: 7

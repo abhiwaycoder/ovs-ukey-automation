@@ -8,7 +8,11 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE_ROOT = Path(
     os.environ.get(
         "OVS_UKEY_EVIDENCE",
-        REPO_ROOT / "evidence",
+        (
+            REPO_ROOT / "tests" / "fixtures" / "evidence"
+            if os.environ.get("CI")
+            else REPO_ROOT / "evidence"
+        ),
     )
 )
 
