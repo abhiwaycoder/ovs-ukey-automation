@@ -3,6 +3,9 @@ set -euo pipefail
 
 R=/root/ovs-debug-runtime3
 NS=ovs-ukey-ns
+BR=ukey-br
+OVS_VSCTL=/root/ovs-3.5.3/utilities/ovs-vsctl
+DB=unix:$R/run/db.sock
 APP=/root/ovs-3.5.3/utilities/ovs-appctl
 OVS_VSWITCHD=/root/ovs-3.5.3/vswitchd/ovs-vswitchd
 
@@ -63,14 +66,45 @@ echo "=================================================="
 echo "3. PREPARE TEST NETWORK"
 echo "=================================================="
 
+VETH="ukey-veth1"
+PEER="ukey-peer1"
+
+echo "--- Clean stale test interfaces ---"
+
+# Remove the root-side peer if it was left behind by a previous run.
+ip link del "$PEER" 2>/dev/null || true
+
+# Remove the test-side veth if it still exists in the disposable namespace.
+ip netns exec "$NS" ip link del "$VETH" 2>/dev/null || true
+
+echo "--- Create fresh veth pair ---"
+
+ip link add "$VETH" type veth peer name "$PEER"
+
+# Keep the peer in the root namespace and move the OVS-facing side
+# into the disposable namespace.
+ip link set "$VETH" netns "$NS"
+
+echo "--- Bring interfaces up ---"
+
+ip link set "$PEER" up
+ip netns exec "$NS" ip link set "$VETH" up
 ip netns exec "$NS" ip link set ukey-br up
-ip netns exec "$NS" ip link set ukey-veth1 up
+
+echo "--- Ensure veth is attached to disposable OVS bridge ---"
+
+if ! "$OVS_VSCTL" --db="$DB" list-ports "$BR" | grep -qx "$VETH"; then
+    "$OVS_VSCTL" --db="$DB" --may-exist add-port "$BR" "$VETH"
+fi
 
 echo "Bridge:"
 ip netns exec "$NS" ip -br link show ukey-br
 
 echo "Veth:"
-ip netns exec "$NS" ip -br link show ukey-veth1
+ip netns exec "$NS" ip -br link show "$VETH"
+
+echo "Peer:"
+ip -br link show "$PEER"
 
 echo
 echo "=================================================="
