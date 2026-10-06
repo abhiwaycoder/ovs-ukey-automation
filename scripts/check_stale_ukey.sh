@@ -1,7 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-EVIDENCE_ROOT="${OVS_UKEY_EVIDENCE:-/root/ovs-ukey-evidence-check/ovs-ukey-evidence}"
+REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+EVIDENCE_ROOT="${OVS_UKEY_EVIDENCE:-$REPO_ROOT/evidence}"
 
 LOG_FILE="$EVIDENCE_ROOT/ovs-vswitchd.log"
 COVERAGE_FILE="$EVIDENCE_ROOT/coverage-final.txt"

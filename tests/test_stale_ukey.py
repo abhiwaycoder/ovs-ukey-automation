@@ -3,10 +3,12 @@ import re
 from pathlib import Path
 
 
+REPO_ROOT = Path(__file__).resolve().parents[1]
+
 EVIDENCE_ROOT = Path(
     os.environ.get(
         "OVS_UKEY_EVIDENCE",
-        "/root/ovs-ukey-evidence-check/ovs-ukey-evidence",
+        REPO_ROOT / "evidence",
     )
 )
 

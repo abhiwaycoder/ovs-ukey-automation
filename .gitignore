@@ -1,7 +1,6 @@
 __pycache__/
 .pytest_cache/
-*.py[cod]
-*.log
-*.tmp
+*.pyc
+
 evidence/*
 !evidence/.gitkeep
