@@ -27,7 +27,37 @@ jobs:
         run: |
           python3 -m pip install --user -r requirements.txt
 
-      - name: Run pytest
+      - name: Run real stale UKEY reproduction
         run: |
-          python3 -m pytest -v
+          sudo -n /usr/local/sbin/ovs-ukey-ci
 
+      - name: Verify real evidence
+        run: |
+          test -s /var/lib/ovs-ukey-ci/evidence/dp-final.txt
+          test -s /var/lib/ovs-ukey-ci/evidence/upcall-final.txt
+          test -s /var/lib/ovs-ukey-ci/evidence/ovs-vswitchd.log
+          test -s /var/lib/ovs-ukey-ci/evidence/stale-ukey-debug.log
+          test -s /var/lib/ovs-ukey-ci/evidence/coverage-final.txt
+
+          grep -q 'missed_dumps=1' \
+            /var/lib/ovs-ukey-ci/evidence/stale-ukey-debug.log
+
+          grep -q 'missed_dumps=2' \
+            /var/lib/ovs-ukey-ci/evidence/stale-ukey-debug.log
+
+          grep -q 'missed_dumps=3' \
+            /var/lib/ovs-ukey-ci/evidence/stale-ukey-debug.log
+
+          grep -q 'missed_dumps=4' \
+            /var/lib/ovs-ukey-ci/evidence/stale-ukey-debug.log
+
+          grep -q 'revalidate_missing_dp_flow' \
+            /var/lib/ovs-ukey-ci/evidence/coverage-final.txt
+
+          grep -q 'keys 0' \
+            /var/lib/ovs-ukey-ci/evidence/upcall-final.txt
+
+      - name: Run pytest against real evidence
+        run: |
+          unset CI
+          python3 -m pytest -v

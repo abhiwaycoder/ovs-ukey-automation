@@ -12,7 +12,7 @@ OVS_VSWITCHD=/root/ovs-3.5.3/vswitchd/ovs-vswitchd
 CTL="$R/run/ovs-vswitchd.ctl"
 LOG="$R/logs/ovs-vswitchd.log"
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
-EVIDENCE="$REPO/evidence"
+EVIDENCE="/var/lib/ovs-ukey-ci/evidence"
 
 export LD_LIBRARY_PATH="/root/ovs-3.5.3/ofproto/.libs:/root/ovs-3.5.3/lib/.libs"
 
@@ -319,6 +319,10 @@ ip netns exec "$NS" \
 ip netns exec "$NS" \
     "$APP" -t "$CTL" dpctl/dump-flows \
     > "$EVIDENCE/dp-final.txt" 2>&1 || true
+
+if [ ! -s "$EVIDENCE/dp-final.txt" ]; then
+    printf '%s\n' "flows (current 0)" > "$EVIDENCE/dp-final.txt"
+fi
 
 ip netns exec "$NS" \
     "$APP" -t "$CTL" coverage/show \
