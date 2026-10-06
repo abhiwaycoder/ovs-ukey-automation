@@ -58,6 +58,7 @@ jobs:
             /var/lib/ovs-ukey-ci/evidence/upcall-final.txt
 
       - name: Run pytest against real evidence
+        env:
+          OVS_UKEY_EVIDENCE: /var/lib/ovs-ukey-ci/evidence
         run: |
-          unset CI
           python3 -m pytest -v
