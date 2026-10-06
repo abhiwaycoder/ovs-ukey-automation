@@ -10,7 +10,9 @@ on:
 
 jobs:
   pytest:
-    runs-on: ubuntu-latest
+    runs-on:
+      - self-hosted
+      - ovs-ukey
 
     steps:
       - name: Checkout repository
