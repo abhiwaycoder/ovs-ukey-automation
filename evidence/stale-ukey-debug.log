@@ -1,0 +1,53 @@
+2026-10-13T04:09:10.969Z|00001|ofproto_dpif_upcall(revalidator40)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb240000e40 dump_seq=5144009 current_dump_seq=5144531 missed_dumps=1
+2026-10-13T04:09:10.969Z|00002|ofproto_dpif_upcall(revalidator40)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c007aa0 dump_seq=5144009 current_dump_seq=5144531 missed_dumps=1
+2026-10-13T04:09:10.969Z|00003|ofproto_dpif_upcall(revalidator40)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c0051a0 dump_seq=5144009 current_dump_seq=5144531 missed_dumps=1
+2026-10-13T04:09:10.969Z|00001|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb2400059d0 dump_seq=5144009 current_dump_seq=5144531 missed_dumps=1
+2026-10-13T04:09:10.969Z|00002|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c008700 dump_seq=5144009 current_dump_seq=5144531 missed_dumps=1
+2026-10-13T04:09:10.969Z|00003|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c0080d0 dump_seq=5144009 current_dump_seq=5144531 missed_dumps=1
+2026-10-13T04:09:10.969Z|00004|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c0062e0 dump_seq=5144009 current_dump_seq=5144531 missed_dumps=1
+2026-10-13T04:09:10.969Z|00005|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c006b50 dump_seq=5144009 current_dump_seq=5144531 missed_dumps=1
+2026-10-13T04:09:10.969Z|00006|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c0072c0 dump_seq=5144009 current_dump_seq=5144531 missed_dumps=1
+2026-10-13T04:09:10.969Z|00007|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c005e90 dump_seq=5144009 current_dump_seq=5144531 missed_dumps=1
+2026-10-13T04:09:10.969Z|00008|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c005620 dump_seq=5144009 current_dump_seq=5144531 missed_dumps=1
+2026-10-13T04:09:11.470Z|00004|ofproto_dpif_upcall(revalidator40)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb240000e40 dump_seq=5144009 current_dump_seq=5145069 missed_dumps=2
+2026-10-13T04:09:11.470Z|00005|ofproto_dpif_upcall(revalidator40)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c007aa0 dump_seq=5144009 current_dump_seq=5145069 missed_dumps=2
+2026-10-13T04:09:11.470Z|00006|ofproto_dpif_upcall(revalidator40)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c0051a0 dump_seq=5144009 current_dump_seq=5145069 missed_dumps=2
+2026-10-13T04:09:11.470Z|00009|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb2400059d0 dump_seq=5144009 current_dump_seq=5145069 missed_dumps=2
+2026-10-13T04:09:11.470Z|00010|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c008700 dump_seq=5144009 current_dump_seq=5145069 missed_dumps=2
+2026-10-13T04:09:11.470Z|00011|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c0080d0 dump_seq=5144009 current_dump_seq=5145069 missed_dumps=2
+2026-10-13T04:09:11.471Z|00012|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c0062e0 dump_seq=5144009 current_dump_seq=5145069 missed_dumps=2
+2026-10-13T04:09:11.471Z|00013|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c006b50 dump_seq=5144009 current_dump_seq=5145069 missed_dumps=2
+2026-10-13T04:09:11.471Z|00014|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c0072c0 dump_seq=5144009 current_dump_seq=5145069 missed_dumps=2
+2026-10-13T04:09:11.471Z|00015|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c005e90 dump_seq=5144009 current_dump_seq=5145069 missed_dumps=2
+2026-10-13T04:09:11.471Z|00016|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c005620 dump_seq=5144009 current_dump_seq=5145069 missed_dumps=2
+2026-10-13T04:09:11.971Z|00007|ofproto_dpif_upcall(revalidator40)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb240000e40 dump_seq=5144009 current_dump_seq=5145592 missed_dumps=3
+2026-10-13T04:09:11.971Z|00008|ofproto_dpif_upcall(revalidator40)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c007aa0 dump_seq=5144009 current_dump_seq=5145592 missed_dumps=3
+2026-10-13T04:09:11.971Z|00009|ofproto_dpif_upcall(revalidator40)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c0051a0 dump_seq=5144009 current_dump_seq=5145592 missed_dumps=3
+2026-10-13T04:09:11.971Z|00017|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb2400059d0 dump_seq=5144009 current_dump_seq=5145592 missed_dumps=3
+2026-10-13T04:09:11.971Z|00018|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c008700 dump_seq=5144009 current_dump_seq=5145592 missed_dumps=3
+2026-10-13T04:09:11.971Z|00019|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c0080d0 dump_seq=5144009 current_dump_seq=5145592 missed_dumps=3
+2026-10-13T04:09:11.972Z|00020|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c0062e0 dump_seq=5144009 current_dump_seq=5145592 missed_dumps=3
+2026-10-13T04:09:11.972Z|00021|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c006b50 dump_seq=5144009 current_dump_seq=5145592 missed_dumps=3
+2026-10-13T04:09:11.972Z|00022|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c0072c0 dump_seq=5144009 current_dump_seq=5145592 missed_dumps=3
+2026-10-13T04:09:11.972Z|00023|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c005e90 dump_seq=5144009 current_dump_seq=5145592 missed_dumps=3
+2026-10-13T04:09:11.972Z|00024|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c005620 dump_seq=5144009 current_dump_seq=5145592 missed_dumps=3
+2026-10-13T04:09:12.472Z|00010|ofproto_dpif_upcall(revalidator40)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb240000e40 dump_seq=5144009 current_dump_seq=5146113 missed_dumps=4
+2026-10-13T04:09:12.472Z|00011|dpif(revalidator40)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:695a9740-7d90-4498-ad51-b10128c94180
+2026-10-13T04:09:12.473Z|00012|ofproto_dpif_upcall(revalidator40)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c007aa0 dump_seq=5144009 current_dump_seq=5146113 missed_dumps=4
+2026-10-13T04:09:12.473Z|00013|dpif(revalidator40)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:95052915-3c84-49eb-920f-11589d426f16
+2026-10-13T04:09:12.473Z|00025|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb2400059d0 dump_seq=5144009 current_dump_seq=5146113 missed_dumps=4
+2026-10-13T04:09:12.473Z|00014|ofproto_dpif_upcall(revalidator40)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c0051a0 dump_seq=5144009 current_dump_seq=5146113 missed_dumps=4
+2026-10-13T04:09:12.473Z|00026|dpif(revalidator39)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:ba7a4b82-8692-4de6-8434-62a44ba4be3f
+2026-10-13T04:09:12.473Z|00015|dpif(revalidator40)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:129b7aa5-bf89-4ca0-9d49-0da1e454dcc6
+2026-10-13T04:09:12.473Z|00027|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c008700 dump_seq=5144009 current_dump_seq=5146113 missed_dumps=4
+2026-10-13T04:09:12.473Z|00028|dpif(revalidator39)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:49bb35b2-b2e9-4394-a63d-bcafb989d480
+2026-10-13T04:09:12.473Z|00029|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c0080d0 dump_seq=5144009 current_dump_seq=5146113 missed_dumps=4
+2026-10-13T04:09:12.473Z|00030|dpif(revalidator39)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:a8097e01-e162-4bae-8dec-3ad9b814e82f
+2026-10-13T04:09:12.473Z|00031|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c0062e0 dump_seq=5144009 current_dump_seq=5146113 missed_dumps=4
+2026-10-13T04:09:12.473Z|00032|dpif(revalidator39)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:55dc3e7c-2ee0-4eb5-8069-88b35ac4ca0f
+2026-10-13T04:09:12.473Z|00033|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c006b50 dump_seq=5144009 current_dump_seq=5146113 missed_dumps=4
+2026-10-13T04:09:12.473Z|00034|dpif(revalidator39)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:42d4fe0c-37ee-4119-8da7-aaa999d41749
+2026-10-13T04:09:12.473Z|00035|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c0072c0 dump_seq=5144009 current_dump_seq=5146113 missed_dumps=4
+2026-10-13T04:09:12.473Z|00036|dpif(revalidator39)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:ae28d861-64cd-4d91-b945-deaf48eef934
+2026-10-13T04:09:12.473Z|00037|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c005e90 dump_seq=5144009 current_dump_seq=5146113 missed_dumps=4
+2026-10-13T04:09:12.474Z|00038|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c005620 dump_seq=5144009 current_dump_seq=5146113 missed_dumps=4

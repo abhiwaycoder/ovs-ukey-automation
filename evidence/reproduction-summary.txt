@@ -1,0 +1,22 @@
+Stale UKEY reproduction summary
+================================
+
+Evidence source:
+  /var/lib/ovs-ukey-ci/evidence/
+
+Observed in the captured run:
+  - Missed-dump progression observed: 1, 2, 3, 4
+  - Datapath deletion warning observed:
+    failed to flow_del (No such file or directory)
+  - revalidate_missing_dp_flow coverage total: 26
+  - Final datapath snapshot: 2 flow entries
+  - Final upcall snapshot: current flows 2; revalidator 39 keys 2,
+    revalidator 40 keys 0
+
+Interpretation:
+  These observations support reproduction of the stale UKEY scenario and
+  document cleanup attempts. The final snapshots do not independently prove
+  that all stale UKEYs were removed.
+
+This is reproduction evidence, not candidate-patch validation.
+Counts and results may vary across runs.

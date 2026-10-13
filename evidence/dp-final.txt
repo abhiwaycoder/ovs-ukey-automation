@@ -1,0 +1,2 @@
+recirc_id(0),in_port(2),eth(src=36:01:3d:a7:e3:77,dst=c2:9d:4a:95:f9:05),eth_type(0x86dd),ipv6(frag=no), packets:0, bytes:0, used:never, actions:3
+recirc_id(0),in_port(3),eth(src=c2:9d:4a:95:f9:05,dst=36:01:3d:a7:e3:77),eth_type(0x86dd),ipv6(frag=no), packets:0, bytes:0, used:never, actions:2

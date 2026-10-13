@@ -1,0 +1,312 @@
+2026-10-13T02:27:56.196Z|00001|vlog|INFO|opened log file /root/ovs-debug-runtime4/logs/ovs-vswitchd.log
+2026-10-13T02:27:56.198Z|00002|ovs_numa|INFO|Discovered 4 CPU cores on NUMA node 0
+2026-10-13T02:27:56.198Z|00003|ovs_numa|INFO|Discovered 1 NUMA nodes and 4 CPU cores
+2026-10-13T02:27:56.200Z|00004|reconnect|INFO|unix:/root/ovs-debug-runtime4/run/db.sock: connecting...
+2026-10-13T02:27:56.200Z|00005|reconnect|INFO|unix:/root/ovs-debug-runtime4/run/db.sock: connected
+2026-10-13T02:27:56.208Z|00006|bridge|INFO|ovs-vswitchd (Open vSwitch) 3.5.3
+2026-10-13T02:28:33.010Z|00007|memory|INFO|6108 kB peak resident set size after 36.8 seconds
+2026-10-13T02:28:33.010Z|00008|memory|INFO|idl-cells-Open_vSwitch:17
+2026-10-13T02:28:33.160Z|00009|dpif_netlink|INFO|Datapath dispatch mode: per-cpu
+2026-10-13T02:28:33.160Z|00010|ofproto_dpif|INFO|system@ovs-system: Datapath supports recirculation
+2026-10-13T02:28:33.160Z|00011|ofproto_dpif|INFO|system@ovs-system: VLAN header stack length probed as 2
+2026-10-13T02:28:33.160Z|00012|ofproto_dpif|INFO|system@ovs-system: MPLS label stack length probed as 3
+2026-10-13T02:28:33.160Z|00013|ofproto_dpif|INFO|system@ovs-system: Datapath supports truncate action
+2026-10-13T02:28:33.160Z|00014|ofproto_dpif|INFO|system@ovs-system: Datapath supports unique flow ids
+2026-10-13T02:28:33.160Z|00015|ofproto_dpif|INFO|system@ovs-system: Datapath supports clone action
+2026-10-13T02:28:33.160Z|00016|ofproto_dpif|INFO|system@ovs-system: Max sample nesting level probed as 10
+2026-10-13T02:28:33.160Z|00017|ofproto_dpif|INFO|system@ovs-system: Datapath supports eventmask in conntrack action
+2026-10-13T02:28:33.160Z|00018|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_clear action
+2026-10-13T02:28:33.161Z|00019|ofproto_dpif|INFO|system@ovs-system: Max dp_hash algorithm probed to be 1
+2026-10-13T02:28:33.161Z|00020|ofproto_dpif|INFO|system@ovs-system: Datapath supports check_pkt_len action
+2026-10-13T02:28:33.161Z|00021|ofproto_dpif|INFO|system@ovs-system: Datapath supports timeout policy in conntrack action
+2026-10-13T02:28:33.161Z|00022|ofproto_dpif|INFO|system@ovs-system: Datapath supports explicit drop action
+2026-10-13T02:28:33.161Z|00023|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_zero_snat
+2026-10-13T02:28:33.161Z|00024|ofproto_dpif|INFO|system@ovs-system: Datapath supports add_mpls action
+2026-10-13T02:28:33.161Z|00025|ofproto_dpif|INFO|system@ovs-system: Datapath supports psample action
+2026-10-13T02:28:33.161Z|00026|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_state
+2026-10-13T02:28:33.162Z|00027|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_zone
+2026-10-13T02:28:33.162Z|00028|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_mark
+2026-10-13T02:28:33.162Z|00029|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_label
+2026-10-13T02:28:33.162Z|00030|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_state_nat
+2026-10-13T02:28:33.162Z|00031|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_orig_tuple
+2026-10-13T02:28:33.162Z|00032|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_orig_tuple6
+2026-10-13T02:28:33.162Z|00033|ofproto_dpif|INFO|system@ovs-system: Datapath does not support IPv6 ND Extensions
+2026-10-13T02:28:33.162Z|00034|ofproto_dpif_upcall|INFO|Overriding n-handler-threads to 4, setting n-revalidator-threads to 2
+2026-10-13T02:28:33.162Z|00035|ofproto_dpif_upcall|INFO|Starting 6 threads
+2026-10-13T02:28:33.170Z|00036|bridge|INFO|bridge ukey-br: added interface ukey-br on port 65534
+2026-10-13T02:28:33.170Z|00037|bridge|INFO|bridge ukey-br: using datapath ID 0000cae80ea2a842
+2026-10-13T02:28:33.170Z|00038|connmgr|INFO|ukey-br: added service controller "punix:/usr/local/var/run/openvswitch/ukey-br.mgmt"
+2026-10-13T02:28:33.209Z|00039|bridge|INFO|bridge ukey-br: added interface ukey-veth1 on port 1
+2026-10-13T02:28:33.233Z|00040|bridge|INFO|bridge ukey-br: added interface ukey-veth2 on port 2
+2026-10-13T02:28:43.012Z|00041|memory|INFO|peak resident set size grew 52% in last 10.0 seconds, from 6108 kB to 9308 kB
+2026-10-13T02:28:43.012Z|00042|memory|INFO|handlers:4 idl-cells-Open_vSwitch:210 ports:3 revalidators:2 rules:5
+2026-10-13T02:29:26.687Z|00001|ofproto_dpif_xlate(handler1)|INFO|/proc/sys/net/core/netdev_max_backlog: open failed (No such file or directory)
+2026-10-13T02:30:26.809Z|00001|ofproto_dpif_upcall(revalidator6)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c004e70 dump_seq=122467 current_dump_seq=122989 missed_dumps=1
+2026-10-13T02:30:26.809Z|00001|ofproto_dpif_upcall(revalidator4)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c005a40 dump_seq=122467 current_dump_seq=122989 missed_dumps=1
+2026-10-13T02:30:27.310Z|00002|ofproto_dpif_upcall(revalidator6)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c004e70 dump_seq=122467 current_dump_seq=123522 missed_dumps=2
+2026-10-13T02:30:27.310Z|00002|ofproto_dpif_upcall(revalidator4)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c005a40 dump_seq=122467 current_dump_seq=123522 missed_dumps=2
+2026-10-13T02:30:27.811Z|00003|ofproto_dpif_upcall(revalidator6)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c004e70 dump_seq=122467 current_dump_seq=124043 missed_dumps=3
+2026-10-13T02:30:27.811Z|00003|ofproto_dpif_upcall(revalidator4)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c005a40 dump_seq=122467 current_dump_seq=124043 missed_dumps=3
+2026-10-13T02:30:28.312Z|00004|ofproto_dpif_upcall(revalidator6)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c004e70 dump_seq=122467 current_dump_seq=124567 missed_dumps=4
+2026-10-13T02:30:28.312Z|00005|dpif(revalidator6)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:7da4c561-5050-404a-9ef6-f4b3ba135ed1
+2026-10-13T02:30:28.312Z|00004|ofproto_dpif_upcall(revalidator4)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c005a40 dump_seq=122467 current_dump_seq=124567 missed_dumps=4
+2026-10-13T02:30:28.312Z|00005|dpif(revalidator4)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:74101de0-349b-445a-ab44-0a31a41c5911
+2026-10-13T03:25:17.239Z|00043|bridge|INFO|bridge ukey-br: deleted interface ukey-veth2 on port 2
+2026-10-13T03:25:17.239Z|00044|bridge|INFO|bridge ukey-br: deleted interface ukey-br on port 65534
+2026-10-13T03:25:17.239Z|00045|bridge|INFO|bridge ukey-br: deleted interface ukey-veth1 on port 1
+2026-10-13T03:25:17.425Z|00046|dpif_netlink|INFO|Datapath dispatch mode: per-cpu
+2026-10-13T03:25:17.425Z|00047|ofproto_dpif|INFO|system@ovs-system: Datapath supports recirculation
+2026-10-13T03:25:17.425Z|00048|ofproto_dpif|INFO|system@ovs-system: VLAN header stack length probed as 2
+2026-10-13T03:25:17.425Z|00049|ofproto_dpif|INFO|system@ovs-system: MPLS label stack length probed as 3
+2026-10-13T03:25:17.425Z|00050|ofproto_dpif|INFO|system@ovs-system: Datapath supports truncate action
+2026-10-13T03:25:17.425Z|00051|ofproto_dpif|INFO|system@ovs-system: Datapath supports unique flow ids
+2026-10-13T03:25:17.425Z|00052|ofproto_dpif|INFO|system@ovs-system: Datapath supports clone action
+2026-10-13T03:25:17.425Z|00053|ofproto_dpif|INFO|system@ovs-system: Max sample nesting level probed as 10
+2026-10-13T03:25:17.425Z|00054|ofproto_dpif|INFO|system@ovs-system: Datapath supports eventmask in conntrack action
+2026-10-13T03:25:17.425Z|00055|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_clear action
+2026-10-13T03:25:17.425Z|00056|ofproto_dpif|INFO|system@ovs-system: Max dp_hash algorithm probed to be 1
+2026-10-13T03:25:17.425Z|00057|ofproto_dpif|INFO|system@ovs-system: Datapath supports check_pkt_len action
+2026-10-13T03:25:17.426Z|00058|ofproto_dpif|INFO|system@ovs-system: Datapath supports timeout policy in conntrack action
+2026-10-13T03:25:17.426Z|00059|ofproto_dpif|INFO|system@ovs-system: Datapath supports explicit drop action
+2026-10-13T03:25:17.426Z|00060|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_zero_snat
+2026-10-13T03:25:17.426Z|00061|ofproto_dpif|INFO|system@ovs-system: Datapath supports add_mpls action
+2026-10-13T03:25:17.426Z|00062|ofproto_dpif|INFO|system@ovs-system: Datapath supports psample action
+2026-10-13T03:25:17.426Z|00063|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_state
+2026-10-13T03:25:17.426Z|00064|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_zone
+2026-10-13T03:25:17.426Z|00065|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_mark
+2026-10-13T03:25:17.426Z|00066|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_label
+2026-10-13T03:25:17.426Z|00067|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_state_nat
+2026-10-13T03:25:17.426Z|00068|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_orig_tuple
+2026-10-13T03:25:17.426Z|00069|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_orig_tuple6
+2026-10-13T03:25:17.426Z|00070|ofproto_dpif|INFO|system@ovs-system: Datapath does not support IPv6 ND Extensions
+2026-10-13T03:25:17.426Z|00071|ofproto_dpif_upcall|INFO|Overriding n-handler-threads to 4, setting n-revalidator-threads to 2
+2026-10-13T03:25:17.426Z|00072|ofproto_dpif_upcall|INFO|Starting 6 threads
+2026-10-13T03:25:17.431Z|00073|bridge|INFO|bridge ukey-br: added interface ukey-br on port 65534
+2026-10-13T03:25:17.431Z|00074|bridge|INFO|bridge ukey-br: using datapath ID 00001e421a887945
+2026-10-13T03:25:17.431Z|00075|connmgr|INFO|ukey-br: added service controller "punix:/usr/local/var/run/openvswitch/ukey-br.mgmt"
+2026-10-13T03:25:17.471Z|00076|bridge|INFO|bridge ukey-br: added interface ukey-veth1 on port 1
+2026-10-13T03:25:17.489Z|00077|bridge|INFO|bridge ukey-br: added interface ukey-veth2 on port 2
+2026-10-13T03:25:25.017Z|00001|ofproto_dpif_upcall(revalidator17)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c0051a0 dump_seq=2396987 current_dump_seq=2397509 missed_dumps=1
+2026-10-13T03:25:25.017Z|00001|ofproto_dpif_upcall(revalidator19)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb244002410 dump_seq=2396987 current_dump_seq=2397509 missed_dumps=1
+2026-10-13T03:25:25.017Z|00002|ofproto_dpif_upcall(revalidator17)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb244000be0 dump_seq=2396987 current_dump_seq=2397509 missed_dumps=1
+2026-10-13T03:25:25.017Z|00002|ofproto_dpif_upcall(revalidator19)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c003850 dump_seq=2396987 current_dump_seq=2397509 missed_dumps=1
+2026-10-13T03:25:25.017Z|00003|ofproto_dpif_upcall(revalidator17)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c003220 dump_seq=2396987 current_dump_seq=2397509 missed_dumps=1
+2026-10-13T03:25:25.017Z|00003|ofproto_dpif_upcall(revalidator19)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c0062a0 dump_seq=2396987 current_dump_seq=2397509 missed_dumps=1
+2026-10-13T03:25:25.017Z|00004|ofproto_dpif_upcall(revalidator17)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c005130 dump_seq=2396987 current_dump_seq=2397509 missed_dumps=1
+2026-10-13T03:25:25.017Z|00004|ofproto_dpif_upcall(revalidator19)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c006a10 dump_seq=2396987 current_dump_seq=2397509 missed_dumps=1
+2026-10-13T03:25:25.017Z|00005|ofproto_dpif_upcall(revalidator17)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c006220 dump_seq=2396987 current_dump_seq=2397509 missed_dumps=1
+2026-10-13T03:25:25.017Z|00005|ofproto_dpif_upcall(revalidator19)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c0057d0 dump_seq=2396987 current_dump_seq=2397509 missed_dumps=1
+2026-10-13T03:25:25.017Z|00006|ofproto_dpif_upcall(revalidator17)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c002bf0 dump_seq=2396987 current_dump_seq=2397509 missed_dumps=1
+2026-10-13T03:25:25.518Z|00007|ofproto_dpif_upcall(revalidator17)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c0051a0 dump_seq=2396987 current_dump_seq=2398051 missed_dumps=2
+2026-10-13T03:25:25.518Z|00008|ofproto_dpif_upcall(revalidator17)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb244000be0 dump_seq=2396987 current_dump_seq=2398051 missed_dumps=2
+2026-10-13T03:25:25.518Z|00009|ofproto_dpif_upcall(revalidator17)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c003220 dump_seq=2396987 current_dump_seq=2398051 missed_dumps=2
+2026-10-13T03:25:25.518Z|00010|ofproto_dpif_upcall(revalidator17)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c005130 dump_seq=2396987 current_dump_seq=2398051 missed_dumps=2
+2026-10-13T03:25:25.518Z|00011|ofproto_dpif_upcall(revalidator17)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c006220 dump_seq=2396987 current_dump_seq=2398051 missed_dumps=2
+2026-10-13T03:25:25.518Z|00006|ofproto_dpif_upcall(revalidator19)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb244002410 dump_seq=2396987 current_dump_seq=2398051 missed_dumps=2
+2026-10-13T03:25:25.518Z|00007|ofproto_dpif_upcall(revalidator19)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c003850 dump_seq=2396987 current_dump_seq=2398051 missed_dumps=2
+2026-10-13T03:25:25.518Z|00012|ofproto_dpif_upcall(revalidator17)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c002bf0 dump_seq=2396987 current_dump_seq=2398051 missed_dumps=2
+2026-10-13T03:25:25.518Z|00008|ofproto_dpif_upcall(revalidator19)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c0062a0 dump_seq=2396987 current_dump_seq=2398051 missed_dumps=2
+2026-10-13T03:25:25.518Z|00009|ofproto_dpif_upcall(revalidator19)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c006a10 dump_seq=2396987 current_dump_seq=2398051 missed_dumps=2
+2026-10-13T03:25:25.518Z|00010|ofproto_dpif_upcall(revalidator19)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c0057d0 dump_seq=2396987 current_dump_seq=2398051 missed_dumps=2
+2026-10-13T03:25:26.018Z|00013|ofproto_dpif_upcall(revalidator17)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c0051a0 dump_seq=2396987 current_dump_seq=2398572 missed_dumps=3
+2026-10-13T03:25:26.018Z|00014|ofproto_dpif_upcall(revalidator17)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb244000be0 dump_seq=2396987 current_dump_seq=2398572 missed_dumps=3
+2026-10-13T03:25:26.018Z|00015|ofproto_dpif_upcall(revalidator17)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c003220 dump_seq=2396987 current_dump_seq=2398572 missed_dumps=3
+2026-10-13T03:25:26.018Z|00011|ofproto_dpif_upcall(revalidator19)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb244002410 dump_seq=2396987 current_dump_seq=2398572 missed_dumps=3
+2026-10-13T03:25:26.018Z|00012|ofproto_dpif_upcall(revalidator19)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c003850 dump_seq=2396987 current_dump_seq=2398572 missed_dumps=3
+2026-10-13T03:25:26.018Z|00016|ofproto_dpif_upcall(revalidator17)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c005130 dump_seq=2396987 current_dump_seq=2398572 missed_dumps=3
+2026-10-13T03:25:26.018Z|00013|ofproto_dpif_upcall(revalidator19)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c0062a0 dump_seq=2396987 current_dump_seq=2398572 missed_dumps=3
+2026-10-13T03:25:26.018Z|00017|ofproto_dpif_upcall(revalidator17)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c006220 dump_seq=2396987 current_dump_seq=2398572 missed_dumps=3
+2026-10-13T03:25:26.018Z|00014|ofproto_dpif_upcall(revalidator19)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c006a10 dump_seq=2396987 current_dump_seq=2398572 missed_dumps=3
+2026-10-13T03:25:26.018Z|00018|ofproto_dpif_upcall(revalidator17)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c002bf0 dump_seq=2396987 current_dump_seq=2398572 missed_dumps=3
+2026-10-13T03:25:26.018Z|00015|ofproto_dpif_upcall(revalidator19)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c0057d0 dump_seq=2396987 current_dump_seq=2398572 missed_dumps=3
+2026-10-13T03:25:26.520Z|00019|ofproto_dpif_upcall(revalidator17)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c0051a0 dump_seq=2396987 current_dump_seq=2399096 missed_dumps=4
+2026-10-13T03:25:26.520Z|00016|ofproto_dpif_upcall(revalidator19)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb244002410 dump_seq=2396987 current_dump_seq=2399096 missed_dumps=4
+2026-10-13T03:25:26.520Z|00020|dpif(revalidator17)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:e049d72f-d01f-40d6-83b8-99d5cde0edee
+2026-10-13T03:25:26.520Z|00021|ofproto_dpif_upcall(revalidator17)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb244000be0 dump_seq=2396987 current_dump_seq=2399096 missed_dumps=4
+2026-10-13T03:25:26.520Z|00022|dpif(revalidator17)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:0a01acf8-42f2-40e6-99d2-b5a11a498db1
+2026-10-13T03:25:26.520Z|00017|dpif(revalidator19)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:3ed6cbe8-5ec5-4039-bbab-21acc3da17c5
+2026-10-13T03:25:26.520Z|00023|ofproto_dpif_upcall(revalidator17)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c003220 dump_seq=2396987 current_dump_seq=2399096 missed_dumps=4
+2026-10-13T03:25:26.520Z|00024|dpif(revalidator17)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:4b96b4d1-d1f0-4c50-96cf-4ab1bb617f88
+2026-10-13T03:25:26.520Z|00025|ofproto_dpif_upcall(revalidator17)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c005130 dump_seq=2396987 current_dump_seq=2399096 missed_dumps=4
+2026-10-13T03:25:26.520Z|00018|ofproto_dpif_upcall(revalidator19)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c003850 dump_seq=2396987 current_dump_seq=2399096 missed_dumps=4
+2026-10-13T03:25:26.520Z|00026|dpif(revalidator17)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:fb7c5d14-534c-472d-820c-ed59b30871ae
+2026-10-13T03:25:26.520Z|00027|ofproto_dpif_upcall(revalidator17)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c006220 dump_seq=2396987 current_dump_seq=2399096 missed_dumps=4
+2026-10-13T03:25:26.520Z|00019|dpif(revalidator19)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:324e33a7-a424-483c-b482-35520f6115ec
+2026-10-13T03:25:26.521Z|00020|ofproto_dpif_upcall(revalidator19)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c0062a0 dump_seq=2396987 current_dump_seq=2399096 missed_dumps=4
+2026-10-13T03:25:26.521Z|00028|ofproto_dpif_upcall(revalidator17)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c002bf0 dump_seq=2396987 current_dump_seq=2399096 missed_dumps=4
+2026-10-13T03:25:26.521Z|00021|ofproto_dpif_upcall(revalidator19)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c006a10 dump_seq=2396987 current_dump_seq=2399096 missed_dumps=4
+2026-10-13T03:25:26.521Z|00022|ofproto_dpif_upcall(revalidator19)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c0057d0 dump_seq=2396987 current_dump_seq=2399096 missed_dumps=4
+2026-10-13T03:50:29.395Z|00078|bridge|INFO|bridge ukey-br: deleted interface ukey-veth2 on port 2
+2026-10-13T03:50:29.395Z|00079|bridge|INFO|bridge ukey-br: deleted interface ukey-br on port 65534
+2026-10-13T03:50:29.395Z|00080|bridge|INFO|bridge ukey-br: deleted interface ukey-veth1 on port 1
+2026-10-13T03:50:29.696Z|00081|dpif_netlink|INFO|Datapath dispatch mode: per-cpu
+2026-10-13T03:50:29.696Z|00082|ofproto_dpif|INFO|system@ovs-system: Datapath supports recirculation
+2026-10-13T03:50:29.696Z|00083|ofproto_dpif|INFO|system@ovs-system: VLAN header stack length probed as 2
+2026-10-13T03:50:29.696Z|00084|ofproto_dpif|INFO|system@ovs-system: MPLS label stack length probed as 3
+2026-10-13T03:50:29.696Z|00085|ofproto_dpif|INFO|system@ovs-system: Datapath supports truncate action
+2026-10-13T03:50:29.696Z|00086|ofproto_dpif|INFO|system@ovs-system: Datapath supports unique flow ids
+2026-10-13T03:50:29.696Z|00087|ofproto_dpif|INFO|system@ovs-system: Datapath supports clone action
+2026-10-13T03:50:29.696Z|00088|ofproto_dpif|INFO|system@ovs-system: Max sample nesting level probed as 10
+2026-10-13T03:50:29.696Z|00089|ofproto_dpif|INFO|system@ovs-system: Datapath supports eventmask in conntrack action
+2026-10-13T03:50:29.696Z|00090|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_clear action
+2026-10-13T03:50:29.696Z|00091|ofproto_dpif|INFO|system@ovs-system: Max dp_hash algorithm probed to be 1
+2026-10-13T03:50:29.696Z|00092|ofproto_dpif|INFO|system@ovs-system: Datapath supports check_pkt_len action
+2026-10-13T03:50:29.696Z|00093|ofproto_dpif|INFO|system@ovs-system: Datapath supports timeout policy in conntrack action
+2026-10-13T03:50:29.696Z|00094|ofproto_dpif|INFO|system@ovs-system: Datapath supports explicit drop action
+2026-10-13T03:50:29.696Z|00095|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_zero_snat
+2026-10-13T03:50:29.696Z|00096|ofproto_dpif|INFO|system@ovs-system: Datapath supports add_mpls action
+2026-10-13T03:50:29.696Z|00097|ofproto_dpif|INFO|system@ovs-system: Datapath supports psample action
+2026-10-13T03:50:29.696Z|00098|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_state
+2026-10-13T03:50:29.696Z|00099|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_zone
+2026-10-13T03:50:29.697Z|00100|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_mark
+2026-10-13T03:50:29.697Z|00101|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_label
+2026-10-13T03:50:29.697Z|00102|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_state_nat
+2026-10-13T03:50:29.697Z|00103|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_orig_tuple
+2026-10-13T03:50:29.697Z|00104|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_orig_tuple6
+2026-10-13T03:50:29.697Z|00105|dpif|WARN|Dropped 5 log messages in last 1503 seconds (most recently, 1503 seconds ago) due to excessive rate
+2026-10-13T03:50:29.697Z|00106|ofproto_dpif|INFO|system@ovs-system: Datapath does not support IPv6 ND Extensions
+2026-10-13T03:50:29.697Z|00107|ofproto_dpif_upcall|INFO|Overriding n-handler-threads to 4, setting n-revalidator-threads to 2
+2026-10-13T03:50:29.697Z|00108|ofproto_dpif_upcall|INFO|Starting 6 threads
+2026-10-13T03:50:29.702Z|00109|bridge|INFO|bridge ukey-br: added interface ukey-br on port 65534
+2026-10-13T03:50:29.702Z|00110|bridge|INFO|bridge ukey-br: using datapath ID 000096746db1da42
+2026-10-13T03:50:29.703Z|00111|connmgr|INFO|ukey-br: added service controller "punix:/usr/local/var/run/openvswitch/ukey-br.mgmt"
+2026-10-13T03:50:29.757Z|00112|bridge|INFO|bridge ukey-br: added interface ukey-veth1 on port 1
+2026-10-13T03:50:29.792Z|00113|bridge|INFO|bridge ukey-br: added interface ukey-veth2 on port 2
+2026-10-13T03:50:36.315Z|00001|ofproto_dpif_upcall(revalidator30)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c005ef0 dump_seq=3977883 current_dump_seq=3978405 missed_dumps=1
+2026-10-13T03:50:36.315Z|00002|ofproto_dpif_upcall(revalidator30)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb244004f60 dump_seq=3977883 current_dump_seq=3978405 missed_dumps=1
+2026-10-13T03:50:36.315Z|00003|ofproto_dpif_upcall(revalidator30)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb2440087e0 dump_seq=3977883 current_dump_seq=3978405 missed_dumps=1
+2026-10-13T03:50:36.315Z|00004|ofproto_dpif_upcall(revalidator30)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c004f40 dump_seq=3977883 current_dump_seq=3978405 missed_dumps=1
+2026-10-13T03:50:36.315Z|00001|ofproto_dpif_upcall(revalidator28)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb244007fd0 dump_seq=3977883 current_dump_seq=3978405 missed_dumps=1
+2026-10-13T03:50:36.315Z|00002|ofproto_dpif_upcall(revalidator28)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb2440068c0 dump_seq=3977883 current_dump_seq=3978405 missed_dumps=1
+2026-10-13T03:50:36.315Z|00003|ofproto_dpif_upcall(revalidator28)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb244007050 dump_seq=3977883 current_dump_seq=3978405 missed_dumps=1
+2026-10-13T03:50:36.315Z|00004|ofproto_dpif_upcall(revalidator28)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb2440057b0 dump_seq=3977883 current_dump_seq=3978405 missed_dumps=1
+2026-10-13T03:50:36.315Z|00005|ofproto_dpif_upcall(revalidator28)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c006b50 dump_seq=3977883 current_dump_seq=3978405 missed_dumps=1
+2026-10-13T03:50:36.315Z|00006|ofproto_dpif_upcall(revalidator28)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb244007860 dump_seq=3977883 current_dump_seq=3978405 missed_dumps=1
+2026-10-13T03:50:36.816Z|00005|ofproto_dpif_upcall(revalidator30)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c005ef0 dump_seq=3977883 current_dump_seq=3978945 missed_dumps=2
+2026-10-13T03:50:36.816Z|00006|ofproto_dpif_upcall(revalidator30)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb244004f60 dump_seq=3977883 current_dump_seq=3978945 missed_dumps=2
+2026-10-13T03:50:36.816Z|00007|ofproto_dpif_upcall(revalidator30)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb2440087e0 dump_seq=3977883 current_dump_seq=3978945 missed_dumps=2
+2026-10-13T03:50:36.816Z|00008|ofproto_dpif_upcall(revalidator30)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c004f40 dump_seq=3977883 current_dump_seq=3978945 missed_dumps=2
+2026-10-13T03:50:36.817Z|00007|ofproto_dpif_upcall(revalidator28)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb244007fd0 dump_seq=3977883 current_dump_seq=3978945 missed_dumps=2
+2026-10-13T03:50:36.817Z|00008|ofproto_dpif_upcall(revalidator28)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb2440068c0 dump_seq=3977883 current_dump_seq=3978945 missed_dumps=2
+2026-10-13T03:50:36.817Z|00009|ofproto_dpif_upcall(revalidator28)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb244007050 dump_seq=3977883 current_dump_seq=3978945 missed_dumps=2
+2026-10-13T03:50:36.817Z|00010|ofproto_dpif_upcall(revalidator28)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb2440057b0 dump_seq=3977883 current_dump_seq=3978945 missed_dumps=2
+2026-10-13T03:50:36.817Z|00011|ofproto_dpif_upcall(revalidator28)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c006b50 dump_seq=3977883 current_dump_seq=3978945 missed_dumps=2
+2026-10-13T03:50:36.817Z|00012|ofproto_dpif_upcall(revalidator28)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb244007860 dump_seq=3977883 current_dump_seq=3978945 missed_dumps=2
+2026-10-13T03:50:37.317Z|00009|ofproto_dpif_upcall(revalidator30)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c005ef0 dump_seq=3977883 current_dump_seq=3979471 missed_dumps=3
+2026-10-13T03:50:37.317Z|00010|ofproto_dpif_upcall(revalidator30)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb244004f60 dump_seq=3977883 current_dump_seq=3979471 missed_dumps=3
+2026-10-13T03:50:37.317Z|00011|ofproto_dpif_upcall(revalidator30)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb2440087e0 dump_seq=3977883 current_dump_seq=3979471 missed_dumps=3
+2026-10-13T03:50:37.317Z|00012|ofproto_dpif_upcall(revalidator30)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c004f40 dump_seq=3977883 current_dump_seq=3979471 missed_dumps=3
+2026-10-13T03:50:37.317Z|00013|ofproto_dpif_upcall(revalidator28)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb244007fd0 dump_seq=3977883 current_dump_seq=3979471 missed_dumps=3
+2026-10-13T03:50:37.317Z|00014|ofproto_dpif_upcall(revalidator28)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb2440068c0 dump_seq=3977883 current_dump_seq=3979471 missed_dumps=3
+2026-10-13T03:50:37.317Z|00015|ofproto_dpif_upcall(revalidator28)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb244007050 dump_seq=3977883 current_dump_seq=3979471 missed_dumps=3
+2026-10-13T03:50:37.317Z|00016|ofproto_dpif_upcall(revalidator28)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb2440057b0 dump_seq=3977883 current_dump_seq=3979471 missed_dumps=3
+2026-10-13T03:50:37.317Z|00017|ofproto_dpif_upcall(revalidator28)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c006b50 dump_seq=3977883 current_dump_seq=3979471 missed_dumps=3
+2026-10-13T03:50:37.317Z|00018|ofproto_dpif_upcall(revalidator28)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb244007860 dump_seq=3977883 current_dump_seq=3979471 missed_dumps=3
+2026-10-13T03:50:37.819Z|00013|ofproto_dpif_upcall(revalidator30)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c005ef0 dump_seq=3977883 current_dump_seq=3979993 missed_dumps=4
+2026-10-13T03:50:37.819Z|00019|ofproto_dpif_upcall(revalidator28)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb244007fd0 dump_seq=3977883 current_dump_seq=3979993 missed_dumps=4
+2026-10-13T03:50:37.819Z|00014|dpif(revalidator30)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:4c8183d5-2ffc-4de0-b8c2-b3051c5ba9eb
+2026-10-13T03:50:37.819Z|00020|dpif(revalidator28)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:da351b45-4bd3-4d72-bf33-f5bb5023db27
+2026-10-13T03:50:37.819Z|00015|ofproto_dpif_upcall(revalidator30)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb244004f60 dump_seq=3977883 current_dump_seq=3979993 missed_dumps=4
+2026-10-13T03:50:37.819Z|00016|dpif(revalidator30)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:9cd7bab9-3670-491a-b580-8eca1b47c04e
+2026-10-13T03:50:37.819Z|00021|ofproto_dpif_upcall(revalidator28)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb2440068c0 dump_seq=3977883 current_dump_seq=3979993 missed_dumps=4
+2026-10-13T03:50:37.819Z|00017|ofproto_dpif_upcall(revalidator30)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb2440087e0 dump_seq=3977883 current_dump_seq=3979993 missed_dumps=4
+2026-10-13T03:50:37.819Z|00018|dpif(revalidator30)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:0fb877a3-cc0f-4bd9-bb10-978f5ab75bf9
+2026-10-13T03:50:37.819Z|00022|dpif(revalidator28)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:fe837d2f-cdbb-4f4d-8159-dce3729af6e2
+2026-10-13T03:50:37.819Z|00019|ofproto_dpif_upcall(revalidator30)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c004f40 dump_seq=3977883 current_dump_seq=3979993 missed_dumps=4
+2026-10-13T03:50:37.819Z|00023|ofproto_dpif_upcall(revalidator28)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb244007050 dump_seq=3977883 current_dump_seq=3979993 missed_dumps=4
+2026-10-13T03:50:37.819Z|00020|dpif(revalidator30)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:4589bcf6-b0ce-44d3-b1ca-7312ac2504e8
+2026-10-13T03:50:37.820Z|00024|dpif(revalidator28)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:2f4d3253-937b-41c4-b397-50731e73f5c4
+2026-10-13T03:50:37.820Z|00025|ofproto_dpif_upcall(revalidator28)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb2440057b0 dump_seq=3977883 current_dump_seq=3979993 missed_dumps=4
+2026-10-13T03:50:37.820Z|00026|dpif(revalidator28)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:f4a2d7e5-ebc9-4ab0-a27d-9cb5be310f90
+2026-10-13T03:50:37.820Z|00027|ofproto_dpif_upcall(revalidator28)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c006b50 dump_seq=3977883 current_dump_seq=3979993 missed_dumps=4
+2026-10-13T03:50:37.820Z|00028|dpif(revalidator28)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:ee3277a7-b66d-41dc-a83e-58110abafaa3
+2026-10-13T03:50:37.820Z|00029|ofproto_dpif_upcall(revalidator28)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb244007860 dump_seq=3977883 current_dump_seq=3979993 missed_dumps=4
+2026-10-13T04:09:04.011Z|00114|bridge|INFO|bridge ukey-br: deleted interface ukey-veth2 on port 2
+2026-10-13T04:09:04.011Z|00115|bridge|INFO|bridge ukey-br: deleted interface ukey-br on port 65534
+2026-10-13T04:09:04.011Z|00116|bridge|INFO|bridge ukey-br: deleted interface ukey-veth1 on port 1
+2026-10-13T04:09:04.300Z|00117|dpif_netlink|INFO|Datapath dispatch mode: per-cpu
+2026-10-13T04:09:04.301Z|00118|ofproto_dpif|INFO|system@ovs-system: Datapath supports recirculation
+2026-10-13T04:09:04.301Z|00119|ofproto_dpif|INFO|system@ovs-system: VLAN header stack length probed as 2
+2026-10-13T04:09:04.301Z|00120|ofproto_dpif|INFO|system@ovs-system: MPLS label stack length probed as 3
+2026-10-13T04:09:04.301Z|00121|ofproto_dpif|INFO|system@ovs-system: Datapath supports truncate action
+2026-10-13T04:09:04.301Z|00122|ofproto_dpif|INFO|system@ovs-system: Datapath supports unique flow ids
+2026-10-13T04:09:04.301Z|00123|ofproto_dpif|INFO|system@ovs-system: Datapath supports clone action
+2026-10-13T04:09:04.301Z|00124|ofproto_dpif|INFO|system@ovs-system: Max sample nesting level probed as 10
+2026-10-13T04:09:04.301Z|00125|ofproto_dpif|INFO|system@ovs-system: Datapath supports eventmask in conntrack action
+2026-10-13T04:09:04.302Z|00126|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_clear action
+2026-10-13T04:09:04.302Z|00127|ofproto_dpif|INFO|system@ovs-system: Max dp_hash algorithm probed to be 1
+2026-10-13T04:09:04.302Z|00128|ofproto_dpif|INFO|system@ovs-system: Datapath supports check_pkt_len action
+2026-10-13T04:09:04.302Z|00129|ofproto_dpif|INFO|system@ovs-system: Datapath supports timeout policy in conntrack action
+2026-10-13T04:09:04.302Z|00130|ofproto_dpif|INFO|system@ovs-system: Datapath supports explicit drop action
+2026-10-13T04:09:04.302Z|00131|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_zero_snat
+2026-10-13T04:09:04.302Z|00132|ofproto_dpif|INFO|system@ovs-system: Datapath supports add_mpls action
+2026-10-13T04:09:04.302Z|00133|ofproto_dpif|INFO|system@ovs-system: Datapath supports psample action
+2026-10-13T04:09:04.302Z|00134|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_state
+2026-10-13T04:09:04.302Z|00135|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_zone
+2026-10-13T04:09:04.302Z|00136|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_mark
+2026-10-13T04:09:04.302Z|00137|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_label
+2026-10-13T04:09:04.302Z|00138|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_state_nat
+2026-10-13T04:09:04.302Z|00139|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_orig_tuple
+2026-10-13T04:09:04.303Z|00140|ofproto_dpif|INFO|system@ovs-system: Datapath supports ct_orig_tuple6
+2026-10-13T04:09:04.303Z|00141|dpif|WARN|Dropped 1 log messages in last 1107 seconds (most recently, 1107 seconds ago) due to excessive rate
+2026-10-13T04:09:04.303Z|00142|ofproto_dpif|INFO|system@ovs-system: Datapath does not support IPv6 ND Extensions
+2026-10-13T04:09:04.303Z|00143|ofproto_dpif_upcall|INFO|Overriding n-handler-threads to 4, setting n-revalidator-threads to 2
+2026-10-13T04:09:04.303Z|00144|ofproto_dpif_upcall|INFO|Starting 6 threads
+2026-10-13T04:09:04.315Z|00145|bridge|INFO|bridge ukey-br: added interface ukey-br on port 65534
+2026-10-13T04:09:04.316Z|00146|bridge|INFO|bridge ukey-br: using datapath ID 0000be40951e344b
+2026-10-13T04:09:04.316Z|00147|connmgr|INFO|ukey-br: added service controller "punix:/usr/local/var/run/openvswitch/ukey-br.mgmt"
+2026-10-13T04:09:04.410Z|00148|bridge|INFO|bridge ukey-br: added interface ukey-veth1 on port 1
+2026-10-13T04:09:04.446Z|00149|bridge|INFO|bridge ukey-br: added interface ukey-veth2 on port 2
+2026-10-13T04:09:10.969Z|00001|ofproto_dpif_upcall(revalidator40)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb240000e40 dump_seq=5144009 current_dump_seq=5144531 missed_dumps=1
+2026-10-13T04:09:10.969Z|00002|ofproto_dpif_upcall(revalidator40)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c007aa0 dump_seq=5144009 current_dump_seq=5144531 missed_dumps=1
+2026-10-13T04:09:10.969Z|00003|ofproto_dpif_upcall(revalidator40)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c0051a0 dump_seq=5144009 current_dump_seq=5144531 missed_dumps=1
+2026-10-13T04:09:10.969Z|00001|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb2400059d0 dump_seq=5144009 current_dump_seq=5144531 missed_dumps=1
+2026-10-13T04:09:10.969Z|00002|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c008700 dump_seq=5144009 current_dump_seq=5144531 missed_dumps=1
+2026-10-13T04:09:10.969Z|00003|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c0080d0 dump_seq=5144009 current_dump_seq=5144531 missed_dumps=1
+2026-10-13T04:09:10.969Z|00004|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c0062e0 dump_seq=5144009 current_dump_seq=5144531 missed_dumps=1
+2026-10-13T04:09:10.969Z|00005|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c006b50 dump_seq=5144009 current_dump_seq=5144531 missed_dumps=1
+2026-10-13T04:09:10.969Z|00006|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c0072c0 dump_seq=5144009 current_dump_seq=5144531 missed_dumps=1
+2026-10-13T04:09:10.969Z|00007|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c005e90 dump_seq=5144009 current_dump_seq=5144531 missed_dumps=1
+2026-10-13T04:09:10.969Z|00008|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c005620 dump_seq=5144009 current_dump_seq=5144531 missed_dumps=1
+2026-10-13T04:09:11.470Z|00004|ofproto_dpif_upcall(revalidator40)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb240000e40 dump_seq=5144009 current_dump_seq=5145069 missed_dumps=2
+2026-10-13T04:09:11.470Z|00005|ofproto_dpif_upcall(revalidator40)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c007aa0 dump_seq=5144009 current_dump_seq=5145069 missed_dumps=2
+2026-10-13T04:09:11.470Z|00006|ofproto_dpif_upcall(revalidator40)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c0051a0 dump_seq=5144009 current_dump_seq=5145069 missed_dumps=2
+2026-10-13T04:09:11.470Z|00009|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb2400059d0 dump_seq=5144009 current_dump_seq=5145069 missed_dumps=2
+2026-10-13T04:09:11.470Z|00010|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c008700 dump_seq=5144009 current_dump_seq=5145069 missed_dumps=2
+2026-10-13T04:09:11.470Z|00011|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c0080d0 dump_seq=5144009 current_dump_seq=5145069 missed_dumps=2
+2026-10-13T04:09:11.471Z|00012|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c0062e0 dump_seq=5144009 current_dump_seq=5145069 missed_dumps=2
+2026-10-13T04:09:11.471Z|00013|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c006b50 dump_seq=5144009 current_dump_seq=5145069 missed_dumps=2
+2026-10-13T04:09:11.471Z|00014|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c0072c0 dump_seq=5144009 current_dump_seq=5145069 missed_dumps=2
+2026-10-13T04:09:11.471Z|00015|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c005e90 dump_seq=5144009 current_dump_seq=5145069 missed_dumps=2
+2026-10-13T04:09:11.471Z|00016|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c005620 dump_seq=5144009 current_dump_seq=5145069 missed_dumps=2
+2026-10-13T04:09:11.971Z|00007|ofproto_dpif_upcall(revalidator40)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb240000e40 dump_seq=5144009 current_dump_seq=5145592 missed_dumps=3
+2026-10-13T04:09:11.971Z|00008|ofproto_dpif_upcall(revalidator40)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c007aa0 dump_seq=5144009 current_dump_seq=5145592 missed_dumps=3
+2026-10-13T04:09:11.971Z|00009|ofproto_dpif_upcall(revalidator40)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c0051a0 dump_seq=5144009 current_dump_seq=5145592 missed_dumps=3
+2026-10-13T04:09:11.971Z|00017|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb2400059d0 dump_seq=5144009 current_dump_seq=5145592 missed_dumps=3
+2026-10-13T04:09:11.971Z|00018|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c008700 dump_seq=5144009 current_dump_seq=5145592 missed_dumps=3
+2026-10-13T04:09:11.971Z|00019|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c0080d0 dump_seq=5144009 current_dump_seq=5145592 missed_dumps=3
+2026-10-13T04:09:11.972Z|00020|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c0062e0 dump_seq=5144009 current_dump_seq=5145592 missed_dumps=3
+2026-10-13T04:09:11.972Z|00021|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c006b50 dump_seq=5144009 current_dump_seq=5145592 missed_dumps=3
+2026-10-13T04:09:11.972Z|00022|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c0072c0 dump_seq=5144009 current_dump_seq=5145592 missed_dumps=3
+2026-10-13T04:09:11.972Z|00023|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c005e90 dump_seq=5144009 current_dump_seq=5145592 missed_dumps=3
+2026-10-13T04:09:11.972Z|00024|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c005620 dump_seq=5144009 current_dump_seq=5145592 missed_dumps=3
+2026-10-13T04:09:12.472Z|00010|ofproto_dpif_upcall(revalidator40)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb240000e40 dump_seq=5144009 current_dump_seq=5146113 missed_dumps=4
+2026-10-13T04:09:12.472Z|00011|dpif(revalidator40)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:695a9740-7d90-4498-ad51-b10128c94180
+2026-10-13T04:09:12.473Z|00012|ofproto_dpif_upcall(revalidator40)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c007aa0 dump_seq=5144009 current_dump_seq=5146113 missed_dumps=4
+2026-10-13T04:09:12.473Z|00013|dpif(revalidator40)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:95052915-3c84-49eb-920f-11589d426f16
+2026-10-13T04:09:12.473Z|00025|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb2400059d0 dump_seq=5144009 current_dump_seq=5146113 missed_dumps=4
+2026-10-13T04:09:12.473Z|00014|ofproto_dpif_upcall(revalidator40)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c0051a0 dump_seq=5144009 current_dump_seq=5146113 missed_dumps=4
+2026-10-13T04:09:12.473Z|00026|dpif(revalidator39)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:ba7a4b82-8692-4de6-8434-62a44ba4be3f
+2026-10-13T04:09:12.473Z|00015|dpif(revalidator40)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:129b7aa5-bf89-4ca0-9d49-0da1e454dcc6
+2026-10-13T04:09:12.473Z|00027|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c008700 dump_seq=5144009 current_dump_seq=5146113 missed_dumps=4
+2026-10-13T04:09:12.473Z|00028|dpif(revalidator39)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:49bb35b2-b2e9-4394-a63d-bcafb989d480
+2026-10-13T04:09:12.473Z|00029|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c0080d0 dump_seq=5144009 current_dump_seq=5146113 missed_dumps=4
+2026-10-13T04:09:12.473Z|00030|dpif(revalidator39)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:a8097e01-e162-4bae-8dec-3ad9b814e82f
+2026-10-13T04:09:12.473Z|00031|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb25c0062e0 dump_seq=5144009 current_dump_seq=5146113 missed_dumps=4
+2026-10-13T04:09:12.473Z|00032|dpif(revalidator39)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:55dc3e7c-2ee0-4eb5-8069-88b35ac4ca0f
+2026-10-13T04:09:12.473Z|00033|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c006b50 dump_seq=5144009 current_dump_seq=5146113 missed_dumps=4
+2026-10-13T04:09:12.473Z|00034|dpif(revalidator39)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:42d4fe0c-37ee-4119-8da7-aaa999d41749
+2026-10-13T04:09:12.473Z|00035|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c0072c0 dump_seq=5144009 current_dump_seq=5146113 missed_dumps=4
+2026-10-13T04:09:12.473Z|00036|dpif(revalidator39)|WARN|system@ovs-system: failed to flow_del (No such file or directory) ufid:ae28d861-64cd-4d91-b945-deaf48eef934
+2026-10-13T04:09:12.473Z|00037|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c005e90 dump_seq=5144009 current_dump_seq=5146113 missed_dumps=4
+2026-10-13T04:09:12.474Z|00038|ofproto_dpif_upcall(revalidator39)|INFO|STALE_UKEY_DEBUG: ukey=0x7fb24c005620 dump_seq=5144009 current_dump_seq=5146113 missed_dumps=4

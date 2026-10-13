@@ -4,3 +4,14 @@ __pycache__/
 
 evidence/*
 !evidence/.gitkeep
+
+# Keep curated stale UKEY reproduction evidence in Git
+!evidence/README.md
+!evidence/reproduction-summary.txt
+!evidence/stale-ukey-debug.log
+!evidence/coverage-final.txt
+!evidence/dp-final.txt
+!evidence/upcall-final.txt
+!evidence/ovs-vswitchd.log
+!evidence/before-fix/
+!evidence/before-fix/**
