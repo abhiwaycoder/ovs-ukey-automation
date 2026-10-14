@@ -1,0 +1,56 @@
+name: OVS Portal Request
+
+run-name: OVS Portal ${{ github.event.client_payload.request_id || github.run_id }}
+
+on:
+  repository_dispatch:
+    types:
+      - ovs-ukey-build
+
+permissions:
+  contents: read
+
+jobs:
+  validate-request:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate portal request
+        env:
+          SRC_RPM_URL: ${{ github.event.client_payload.src_rpm_url }}
+          PATCH_URL: ${{ github.event.client_payload.patch_url }}
+          PATCH_CONTENT: ${{ github.event.client_payload.patch_content }}
+          REQUEST_ID: ${{ github.event.client_payload.request_id }}
+        run: |
+          set -euo pipefail
+
+          python3 - <<'PY'
+          import os
+          import uuid
+          from urllib.parse import urlparse
+
+          request_id = os.environ.get("REQUEST_ID", "")
+          try:
+              uuid.UUID(request_id)
+          except ValueError:
+              raise SystemExit("Invalid or missing request_id")
+
+          src = urlparse(os.environ.get("SRC_RPM_URL", ""))
+          if src.scheme != "https" or not src.netloc or not src.path.endswith(".src.rpm"):
+              raise SystemExit("src_rpm_url must be an HTTPS URL ending in .src.rpm")
+
+          patch_url = os.environ.get("PATCH_URL", "").strip()
+          patch_content = os.environ.get("PATCH_CONTENT", "")
+          if bool(patch_url) == bool(patch_content.strip()):
+              raise SystemExit("Provide exactly one of patch_url or patch_content")
+
+          if patch_url:
+              patch = urlparse(patch_url)
+              if patch.scheme != "https" or not patch.netloc:
+                  raise SystemExit("patch_url must be a valid HTTPS URL")
+
+          if len(patch_content.encode("utf-8")) > 48000:
+              raise SystemExit("patch_content exceeds 48 KB")
+
+          print(f"Portal request {request_id} validated.")
+          print("This workflow validates inputs only; it does not build an RPM.")
+          PY

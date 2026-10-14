@@ -15,3 +15,8 @@ evidence/*
 !evidence/ovs-vswitchd.log
 !evidence/before-fix/
 !evidence/before-fix/**
+
+# Local Python web service
+.venv/
+venv/
+.env
