@@ -52,3 +52,70 @@ services as part of this test.
 Install the test dependency with:
 
 `python3 -m pip install -r requirements.txt`
+
+---
+
+## FastAPI Portal
+
+The FastAPI portal submits OVS stale-UKEY automation requests through GitHub Actions.
+
+### Features
+- Web form for source RPM URL and patch input.
+- Validates request inputs and supports a patch URL or patch content.
+- Dispatches the `ovs-ukey-build` repository event.
+- Provides a request-status endpoint.
+- Includes automated portal API tests.
+
+### Architecture
+
+Browser -> FastAPI -> GitHub repository_dispatch -> OVS Portal Request workflow -> Input validation
+
+**Current limitation:** The portal workflow validates inputs only. It does not yet download source RPMs, apply patches, build RPMs, or execute stale-UKEY reproduction. The existing self-hosted reproduction workflow remains separate.
+
+Portal dispatch and workflow validation were tested successfully, and the local test suite passed 10 tests during verification.
+
+### Configuration
+
+Install dependencies:
+
+    python3 -m venv .venv
+    . .venv/bin/activate
+    python -m pip install -r requirements.txt
+
+Configure a local `.env` file with a fine-grained token restricted to `abhiwaycoder/ovs-ukey-automation`:
+
+    GITHUB_TOKEN=<your-token>
+    GITHUB_OWNER=abhiwaycoder
+    GITHUB_REPO=ovs-ukey-automation
+
+Use `chmod 600 .env`. Never commit or disclose the token. Load these variables into the service process before starting the portal.
+
+### Start the portal
+
+    .venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000
+
+Open `http://127.0.0.1:8000/`. The health endpoint is `/health`, and interactive API documentation is available at `/docs`.
+
+### API endpoints
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| GET | `/` | Portal web form |
+| GET | `/health` | Health check |
+| POST | `/build` | Validate and dispatch a request |
+| GET | `/build/{request_id}` | Query workflow status |
+
+The `/build` endpoint currently dispatches a validation request; it does not build an RPM.
+
+### Tests
+
+    .venv/bin/python -m pytest -v
+
+Passing local tests does not replace validation on the configured disposable OVS test runtime.
+
+### Portal safety
+- Use only the configured disposable runtime for reproduction.
+- Never point scripts at production OVS sockets or databases.
+- Do not restart production OVS services as part of testing.
+- Do not submit real build requests until build execution and its safety controls are implemented and reviewed.
+- Keep credentials out of version control and preserve existing backup files.
