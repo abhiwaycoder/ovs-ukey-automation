@@ -124,3 +124,55 @@ def test_github_network_error_returns_502(monkeypatch):
 
     assert exc_info.value.status_code == 502
     assert "Could not reach GitHub API" in exc_info.value.detail
+
+
+def test_status_returns_matching_workflow_run(monkeypatch):
+    request_id = str(uuid.uuid4())
+    expected_name = f"OVS Portal {request_id}"
+
+    def fake_github_request(method, path, payload=None):
+        assert method == "GET"
+        assert path == "actions/runs?per_page=100"
+        return 200, json.dumps({
+            "workflow_runs": [{
+                "name": expected_name,
+                "id": 12345,
+                "status": "completed",
+                "conclusion": "success",
+                "html_url": "https://github.com/example/repo/actions/runs/12345",
+            }]
+        })
+
+    monkeypatch.setattr(main, "github_request", fake_github_request)
+
+    response = client.get(f"/build/{request_id}")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "request_id": request_id,
+        "run_id": 12345,
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/example/repo/actions/runs/12345",
+    }
+
+
+def test_status_reports_when_workflow_run_is_not_visible(monkeypatch):
+    request_id = str(uuid.uuid4())
+
+    monkeypatch.setattr(
+        main,
+        "github_request",
+        lambda method, path, payload=None: (
+            200,
+            json.dumps({"workflow_runs": []}),
+        ),
+    )
+
+    response = client.get(f"/build/{request_id}")
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["request_id"] == request_id
+    assert data["status"] == "queued_or_not_yet_visible"
+    assert "No matching run found yet" in data["message"]
