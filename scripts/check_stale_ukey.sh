@@ -16,16 +16,15 @@ test -f "$LOG_FILE"
 test -f "$COVERAGE_FILE"
 
 echo
-echo "=== MISSED DUMPS ==="
-grep 'STALE_UKEY_DEBUG' "$LOG_FILE"
+echo "=== EVIDENCE SUMMARY ==="
+printf 'STALE_UKEY_DEBUG records: '
+grep -c 'STALE_UKEY_DEBUG' "$LOG_FILE" || true
 
-echo
-echo "=== DELETE ATTEMPTS ==="
-grep -i 'failed to flow_del' "$LOG_FILE"
+printf 'Datapath delete failure records: '
+grep -ic 'failed to flow_del' "$LOG_FILE" || true
 
-echo
-echo "=== COVERAGE ==="
-grep 'revalidate_missing_dp_flow' "$COVERAGE_FILE"
+printf 'Coverage records: '
+grep -c 'revalidate_missing_dp_flow' "$COVERAGE_FILE" || true
 
 echo
 echo "=== ASSERTIONS ==="
