@@ -223,40 +223,54 @@ def build_status(request_id: str):
     except ValueError as exc:
         raise HTTPException(status_code=400, detail="Invalid request ID") from exc
 
-    # repository_dispatch does not return a workflow run ID. The workflow
-    # must set its run name to include this request ID; then we can correlate
-    # it with the GitHub Actions runs list.
-    status, body = github_request(
-        "GET",
-        "actions/runs?per_page=100",
-    )
-
     import json
 
-    try:
-        result = json.loads(body)
-    except json.JSONDecodeError as exc:
-        raise HTTPException(
-            status_code=502,
-            detail="GitHub returned invalid JSON",
-        ) from exc
-
     expected_name = f"OVS Portal {request_id}"
-    for run in result.get("workflow_runs", []):
-        if run.get("name") == expected_name or run.get("display_title") == expected_name:
-            return {
-                "request_id": request_id,
-                "run_id": run.get("id"),
-                "status": run.get("status"),
-                "conclusion": run.get("conclusion"),
-                "html_url": run.get("html_url"),
-            }
+    max_pages = 5
+
+    # Search a bounded number of pages so older runs can be found without
+    # allowing one status request to query GitHub indefinitely.
+    for page in range(1, max_pages + 1):
+        _, body = github_request(
+            "GET",
+            f"actions/runs?per_page=100&page={page}",
+        )
+
+        try:
+            result = json.loads(body)
+        except json.JSONDecodeError as exc:
+            raise HTTPException(
+                status_code=502,
+                detail="GitHub returned invalid JSON",
+            ) from exc
+
+        runs = result.get("workflow_runs", [])
+        if not isinstance(runs, list):
+            raise HTTPException(
+                status_code=502,
+                detail="GitHub returned an invalid workflow-runs response",
+            )
+
+        for run in runs:
+            if not isinstance(run, dict):
+                continue
+            if run.get("name") == expected_name or run.get("display_title") == expected_name:
+                return {
+                    "request_id": request_id,
+                    "run_id": run.get("id"),
+                    "status": run.get("status"),
+                    "conclusion": run.get("conclusion"),
+                    "html_url": run.get("html_url"),
+                }
+
+        if not runs or len(runs) < 100:
+            break
 
     return {
         "request_id": request_id,
         "status": "queued_or_not_yet_visible",
         "message": (
-            "No matching run found yet. Ensure the workflow run name includes "
-            "the request ID and allow time for GitHub to register the run."
+            "No matching run found in the searched pages. The workflow may "
+            "not be visible yet, or the request may be older than the search window."
         ),
     }
