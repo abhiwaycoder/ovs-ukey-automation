@@ -22,6 +22,86 @@ The reproduction:
 9. Verifies the UKEY is removed.
 10. Saves evidence under evidence/.
 
+## Regression Validation: Stale UKEY Cleanup
+
+### Objective
+
+Validate the fix for stale userspace datapath flow keys (UKEYs) by running the same Open vSwitch regression test against the baseline and patched source trees.
+
+**Fix commit:** `ce789d991f748d95a34355e7813ddf18a64de504`
+
+Commit message: `ofproto-dpif-upcall: Avoid stale ukeys leaks.`
+
+### Test Details
+
+| Property | Value |
+|---|---|
+| Test ID | `1315` |
+| Test name | `ofproto-dpif - Cleanup missing datapath flows` |
+| Test file | `tests/ofproto-dpif.at` |
+| Baseline commit | `fecbba4bc01db774cb8a95b0e071eb37f16fa9f9` |
+| Patched commit | `ce789d991f748d95a34355e7813ddf18a64de504` |
+
+### Validation Results
+
+| Check | Baseline | Patched |
+|---|---|---|
+| Test exit code | `1` | `0` |
+| Regression test | Failed | Passed |
+| Expected outcome | Regression reproduced | Regression test passed |
+
+The baseline run failed at `ofproto-dpif.at:11970`, where the test checks that no UKEYs remain after the datapath flows have been deleted. The patched run completed successfully, with one successful test.
+
+### What the Regression Test Verifies
+
+The test exercises the following sequence:
+
+1. Starts the test OVS environment and configures the required ports.
+2. Generates traffic to create a datapath flow and its corresponding UKEY.
+3. Verifies that a UKEY exists.
+4. Deletes the datapath flows and checks that the datapath flow table is empty.
+5. Advances simulated time to allow revalidator rounds to process the missing datapath flow.
+6. Verifies that no UKEY keys remain.
+7. Checks that the `revalidate_missing_dp_flow` coverage counter was incremented.
+
+The baseline failure and patched success provide evidence that the fix addresses the regression exercised by this test.
+
+### Evidence and Integrity Checks
+
+The regression evidence is published in the repository:
+
+- [Regression validation summary](evidence/stale-ukey-regression-summary.txt)
+- [Patched regression test log](evidence/stale-ukey-test-1315-patched.log)
+- [SHA-256 checksums](evidence/stale-ukey-regression-SHA256SUMS)
+
+To verify the checksums from the repository root, run:
+
+```bash
+sha256sum -c evidence/stale-ukey-regression-SHA256SUMS
+```
+
+### Automated Validation
+
+Repeat the baseline-versus-patched comparison using:
+
+```bash
+./scripts/validate_stale_ukey_fix.sh
+```
+
+The script checks the source trees and expected commit relationship, executes the regression test, records exit codes and logs, generates a summary, and calculates SHA-256 checksums.
+
+The default configuration expects the baseline and patched trees under `/root/ovs-upstream-review`. See the script's usage output for supported overrides.
+
+### Scope and Limitations
+
+**Validation status: PASS for regression test 1315.**
+
+This result demonstrates that the tested regression fails on the baseline and passes with the specified fix. It does not prove that every stale UKEY scenario is resolved, that all datapath cleanup paths are covered, or that the fix has been validated across every supported OVS configuration.
+
+Broader validation should include additional relevant regression tests and runtime scenarios as appropriate.
+
+Run this validation only in a suitable test environment. Do not use production OVS sockets, databases, or services for destructive regression testing.
+
 ## Project flow
 
 Deterministic reproduction -> Automated verification -> GitHub Actions -> CI -> OpenStack -> End-to-end validation
