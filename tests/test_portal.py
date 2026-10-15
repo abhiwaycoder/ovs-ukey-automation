@@ -176,3 +176,45 @@ def test_status_reports_when_workflow_run_is_not_visible(monkeypatch):
     assert data["request_id"] == request_id
     assert data["status"] == "queued_or_not_yet_visible"
     assert "No matching run found yet" in data["message"]
+
+
+def test_status_rejects_invalid_github_json(monkeypatch):
+    request_id = str(uuid.uuid4())
+    monkeypatch.setattr(
+        main, "github_request",
+        lambda method, path, payload=None: (200, "not-json"),
+    )
+    response = client.get(f"/build/{request_id}")
+    assert response.status_code == 502
+
+
+def test_status_handles_missing_workflow_runs(monkeypatch):
+    request_id = str(uuid.uuid4())
+    monkeypatch.setattr(
+        main, "github_request",
+        lambda method, path, payload=None: (200, json.dumps({})),
+    )
+    response = client.get(f"/build/{request_id}")
+    assert response.status_code == 200
+    assert response.json()["status"] == "queued_or_not_yet_visible"
+
+
+def test_status_ignores_unmatched_workflow_name(monkeypatch):
+    request_id = str(uuid.uuid4())
+    monkeypatch.setattr(
+        main, "github_request",
+        lambda method, path, payload=None: (
+            200,
+            json.dumps({
+                "workflow_runs": [{
+                    "name": "Unrelated workflow",
+                    "id": 54321,
+                    "status": "completed",
+                    "conclusion": "success",
+                }]
+            }),
+        ),
+    )
+    response = client.get(f"/build/{request_id}")
+    assert response.status_code == 200
+    assert response.json()["status"] == "queued_or_not_yet_visible"
