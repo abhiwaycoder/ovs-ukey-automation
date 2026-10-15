@@ -80,3 +80,47 @@ def test_dispatch_returns_request_id(monkeypatch):
 def test_status_rejects_invalid_request_id():
     response = client.get("/build/not-a-uuid")
     assert response.status_code == 400
+
+
+def test_github_request_without_token_returns_503(monkeypatch):
+    monkeypatch.delenv("GITHUB_TOKEN", raising=False)
+
+    with pytest.raises(main.HTTPException) as exc_info:
+        main.github_request("GET", "actions/runs?per_page=100")
+
+    assert exc_info.value.status_code == 503
+    assert "GITHUB_TOKEN is missing" in exc_info.value.detail
+
+
+def test_github_http_error_returns_502(monkeypatch):
+    from urllib.error import HTTPError
+    from unittest.mock import patch
+
+    error = HTTPError(
+        url="https://api.github.com/test",
+        code=403,
+        msg="Forbidden",
+        hdrs=None,
+        fp=__import__("io").BytesIO(b'{"message":"Forbidden"}'),
+    )
+
+    with patch("app.main.urlopen", side_effect=error):
+        with pytest.raises(main.HTTPException) as exc_info:
+            monkeypatch.setenv("GITHUB_TOKEN", "test-token")
+            main.github_request("GET", "actions/runs?per_page=100")
+
+    assert exc_info.value.status_code == 502
+    assert "HTTP 403" in exc_info.value.detail
+
+
+def test_github_network_error_returns_502(monkeypatch):
+    from urllib.error import URLError
+    from unittest.mock import patch
+
+    with patch("app.main.urlopen", side_effect=URLError("test connection failure")):
+        monkeypatch.setenv("GITHUB_TOKEN", "test-token")
+        with pytest.raises(main.HTTPException) as exc_info:
+            main.github_request("GET", "actions/runs?per_page=100")
+
+    assert exc_info.value.status_code == 502
+    assert "Could not reach GitHub API" in exc_info.value.detail
