@@ -199,3 +199,11 @@ Passing local tests does not replace validation on the configured disposable OVS
 - Do not restart production OVS services as part of testing.
 - Do not submit real build requests until build execution and its safety controls are implemented and reviewed.
 - Keep credentials out of version control and preserve existing backup files.
+
+---
+
+## OVS RPM build and test report
+
+The EL8.10 package build and validation status, including the focused regression result and the unresolved full-suite resource failure, are documented in [docs/BUILD_AND_TEST_RESULTS.md](docs/BUILD_AND_TEST_RESULTS.md).
+
+**Package status:** No RPM artifact has been generated yet. Do not treat the `%check` stage as passed. A package created with `rpmbuild --nocheck` must be clearly identified as having skipped `%check`.
