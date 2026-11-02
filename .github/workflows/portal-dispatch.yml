@@ -1,56 +1,195 @@
-name: OVS Portal Request
+name: OVS Portal RPM Build
 
-run-name: OVS Portal ${{ github.event.client_payload.request_id || github.run_id }}
+run-name: ${{ github.event.client_payload.request_id || github.run_id }}
 
 on:
   repository_dispatch:
     types:
       - ovs-ukey-build
+  workflow_dispatch:
+    inputs:
+      src_rpm_url:
+        description: Clean Open vSwitch 2.17.0 EL8 source RPM URL
+        required: true
+        type: string
+        default: https://vault.centos.org/8-stream/nfv/Source/openvswitch-2/openvswitch2.17-2.17.0-106.el8s.src.rpm
+      patch_url:
+        description: Tested stale-UKEY patch Release asset URL
+        required: true
+        type: string
+        default: https://github.com/abhiwaycoder/ovs-ukey-automation/releases/download/ovs-2.17.0-106.el8-build-inputs/openvswitch-2.17.0-stale-ukey.patch
 
 permissions:
   contents: read
 
+concurrency:
+  group: ovs-ukey-rpm-build
+  cancel-in-progress: false
+
 jobs:
-  validate-request:
+  rpm-build:
     runs-on: ubuntu-latest
+    timeout-minutes: 120
+    container:
+      image: quay.io/rockylinux/rockylinux:8.10
+    env:
+      SRC_RPM_URL: ${{ github.event.client_payload.src_rpm_url || github.event.inputs.src_rpm_url || 'https://vault.centos.org/8-stream/nfv/Source/openvswitch-2/openvswitch2.17-2.17.0-106.el8s.src.rpm' }}
+      PATCH_URL: ${{ github.event.client_payload.patch_url || github.event.inputs.patch_url || '' }}
+      PATCH_CONTENT: ${{ github.event.client_payload.patch_content || '' }}
+      REQUEST_ID: ${{ github.event.client_payload.request_id || github.run_id }}
+      SRPM_FILE: ${{ github.workspace }}/inputs/openvswitch2.17-2.17.0-106.el8s.src.rpm
+      PATCH_FILE: ${{ github.workspace }}/inputs/openvswitch-2.17.0-stale-ukey.patch
+
     steps:
-      - name: Validate portal request
-        env:
-          SRC_RPM_URL: ${{ github.event.client_payload.src_rpm_url }}
-          PATCH_URL: ${{ github.event.client_payload.patch_url }}
-          PATCH_CONTENT: ${{ github.event.client_payload.patch_content }}
-          REQUEST_ID: ${{ github.event.client_payload.request_id }}
+      - name: Check out automation repository
+        uses: actions/checkout@v4
+
+      - name: Validate request and prepare patch input
+        shell: bash
         run: |
           set -euo pipefail
-
           python3 - <<'PY'
           import os
           import uuid
           from urllib.parse import urlparse
 
-          request_id = os.environ.get("REQUEST_ID", "")
-          try:
-              uuid.UUID(request_id)
-          except ValueError:
-              raise SystemExit("Invalid or missing request_id")
+          expected_srpm_url = (
+              "https://vault.centos.org/8-stream/nfv/Source/openvswitch-2/"
+              "openvswitch2.17-2.17.0-106.el8s.src.rpm"
+          )
+          expected_patch_url = (
+              "https://github.com/abhiwaycoder/ovs-ukey-automation/releases/"
+              "download/ovs-2.17.0-106.el8-build-inputs/"
+              "openvswitch-2.17.0-stale-ukey.patch"
+          )
 
-          src = urlparse(os.environ.get("SRC_RPM_URL", ""))
-          if src.scheme != "https" or not src.netloc or not src.path.endswith(".src.rpm"):
-              raise SystemExit("src_rpm_url must be an HTTPS URL ending in .src.rpm")
+          request_id = os.environ["REQUEST_ID"]
+          if os.environ.get("GITHUB_EVENT_NAME") == "repository_dispatch":
+              uuid.UUID(request_id)
+
+          src_url = os.environ.get("SRC_RPM_URL", "")
+          parsed_src = urlparse(src_url)
+          if src_url != expected_srpm_url:
+              raise SystemExit("Only the validated CentOS Vault OVS 2.17.0-106.el8s SRPM is currently allowed")
+          if parsed_src.scheme != "https" or parsed_src.hostname != "vault.centos.org":
+              raise SystemExit("Source RPM must be downloaded over HTTPS from vault.centos.org")
 
           patch_url = os.environ.get("PATCH_URL", "").strip()
           patch_content = os.environ.get("PATCH_CONTENT", "")
-          if bool(patch_url) == bool(patch_content.strip()):
-              raise SystemExit("Provide exactly one of patch_url or patch_content")
+          if patch_url and patch_content.strip():
+              raise SystemExit("Provide patch_url or patch_content, not both")
 
-          if patch_url:
-              patch = urlparse(patch_url)
-              if patch.scheme != "https" or not patch.netloc:
-                  raise SystemExit("patch_url must be a valid HTTPS URL")
+          os.makedirs(os.path.dirname(os.environ["PATCH_FILE"]), exist_ok=True)
 
-          if len(patch_content.encode("utf-8")) > 48000:
-              raise SystemExit("patch_content exceeds 48 KB")
+          if patch_content.strip():
+              if len(patch_content.encode("utf-8")) > 48000:
+                  raise SystemExit("patch_content exceeds 48 KB")
+              with open(os.environ["PATCH_FILE"], "w", encoding="utf-8", newline="") as patch_file:
+                  patch_file.write(patch_content)
+              with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as env_file:
+                  env_file.write("PATCH_IS_LOCAL=true\n")
+          else:
+              if not patch_url:
+                  patch_url = expected_patch_url
+              parsed_patch = urlparse(patch_url)
+              if patch_url != expected_patch_url:
+                  raise SystemExit("Patch URL must be the published tested stale-UKEY patch Release asset")
+              if parsed_patch.scheme != "https" or parsed_patch.hostname != "github.com":
+                  raise SystemExit("Patch URL must use HTTPS on github.com")
+              with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as env_file:
+                  env_file.write("PATCH_DOWNLOAD_URL=" + patch_url + "\n")
+                  env_file.write("PATCH_IS_LOCAL=false\n")
 
-          print(f"Portal request {request_id} validated.")
-          print("This workflow validates inputs only; it does not build an RPM.")
+          print("Request validated.")
+          print("Source RPM: " + src_url)
+          print("Patch input: " + ("repository_dispatch content" if patch_content.strip() else patch_url or expected_patch_url))
+          print("The build will use one job and skip %check.")
           PY
+
+      - name: Install RPM build tooling and source RPM dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          dnf -y install dnf-plugins-core rpm-build rpmdevtools cpio curl ca-certificates git tar gzip make gcc gcc-c++
+          dnf config-manager --set-enabled powertools || true
+          dnf builddep -y "$SRPM_FILE"
+
+      - name: Download and verify clean source RPM
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$(dirname "$SRPM_FILE")"
+          curl --fail --location --retry 3 --retry-all-errors \
+            --proto '=https' --proto-redir '=https' \
+            --max-time 600 --output "$SRPM_FILE" "$SRC_RPM_URL"
+
+          actual_size=$(stat -c '%s' "$SRPM_FILE")
+          test "$actual_size" -eq 31709062
+
+          metadata=$(rpm -qp --qf '%{NAME}|%{VERSION}|%{RELEASE}\n' "$SRPM_FILE")
+          test "$metadata" = "openvswitch2.17|2.17.0|106.el8s"
+
+          # Verify RPM digests without claiming the signing key is trusted.
+          rpm -K --nosignature "$SRPM_FILE"
+          sha256sum "$SRPM_FILE"
+
+      - name: Download and verify tested stale-UKEY patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "\${PATCH_IS_LOCAL:-false}" != "true" ]; then
+            curl --fail --location --retry 3 --retry-all-errors \
+              --proto '=https' --proto-redir '=https' \
+              --max-time 120 --output "$PATCH_FILE" "$PATCH_DOWNLOAD_URL"
+          fi
+
+          expected_patch_sha="454abe3e7f6f48ba7543a6c5b636129f9d6e56422a15e7fc06f0215d4ffce4cc"
+          echo "$expected_patch_sha  $PATCH_FILE" | sha256sum --check -
+          grep -q 'diff --git a/ofproto/ofproto-dpif-upcall.c' "$PATCH_FILE"
+
+      - name: Build RPMs from clean SRPM
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash scripts/build_rpm.sh \
+            --srpm "$SRPM_FILE" \
+            --patch "$PATCH_FILE" \
+            --topdir "$GITHUB_WORKSPACE/rpm-output" \
+            --jobs 1
+
+      - name: Publish build summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "# OVS RPM build"
+            echo
+            echo "- Request: $REQUEST_ID"
+            echo "- Container: Rocky Linux 8.10"
+            echo "- Build parallelism: 1"
+            echo "- RPM %check: skipped (--nocheck)"
+            echo "- RPM signing: not performed"
+            echo
+            if [ -f rpm-output/SHA256SUMS ]; then
+              echo "## Generated RPM checksums"
+              cat rpm-output/SHA256SUMS
+            fi
+            if [ -f rpm-output/build.log ]; then
+              echo
+              echo "## Build summary"
+              grep -E 'Wrote:|error:|Error ' rpm-output/build.log | tail -40 || true
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload RPMs, source RPM, log, and checksums
+        if: always() && hashFiles('rpm-output/build.log') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: ovs-rpm-build-${{ github.run_id }}
+          path: |
+            rpm-output/RPMS/
+            rpm-output/SRPMS/
+            rpm-output/SHA256SUMS
+            rpm-output/build.log
+          if-no-files-found: warn
+          retention-days: 14
