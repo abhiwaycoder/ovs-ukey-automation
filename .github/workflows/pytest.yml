@@ -1,4 +1,4 @@
-name: OVS UKEY Tests
+name: OVS UKEY Unit Tests
 
 on:
   push:
@@ -8,55 +8,27 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   pytest:
-    runs-on:
-      - self-hosted
-      - ovs-ukey
-
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Verify Python
-        run: |
-          python3 --version
-          python3 -m pip --version
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
 
       - name: Install dependencies
-        run: |
-          python3 -m pip install --user -r requirements.txt
+        run: python -m pip install -r requirements.txt
 
-      - name: Run real stale UKEY reproduction
-        run: |
-          sudo -n /usr/local/sbin/ovs-ukey-ci
-
-      - name: Verify real evidence
-        run: |
-          test -f /var/lib/ovs-ukey-ci/evidence/dp-final.txt
-          test -s /var/lib/ovs-ukey-ci/evidence/upcall-final.txt
-          test -s /var/lib/ovs-ukey-ci/evidence/ovs-vswitchd.log
-          test -s /var/lib/ovs-ukey-ci/evidence/stale-ukey-debug.log
-          test -s /var/lib/ovs-ukey-ci/evidence/coverage-final.txt
-
-          grep -q 'missed_dumps=1' \
-            /var/lib/ovs-ukey-ci/evidence/stale-ukey-debug.log
-
-          grep -q 'missed_dumps=2' \
-            /var/lib/ovs-ukey-ci/evidence/stale-ukey-debug.log
-
-          grep -q 'missed_dumps=3' \
-            /var/lib/ovs-ukey-ci/evidence/stale-ukey-debug.log
-
-          grep -q 'missed_dumps=4' \
-            /var/lib/ovs-ukey-ci/evidence/stale-ukey-debug.log
-
-          grep -q 'revalidate_missing_dp_flow' \
-            /var/lib/ovs-ukey-ci/evidence/coverage-final.txt
-
-
-      - name: Run pytest against real evidence
+      - name: Run unit tests against committed evidence fixtures
         env:
-          OVS_UKEY_EVIDENCE: /var/lib/ovs-ukey-ci/evidence
-        run: |
-          python3 -m pytest -v
+          OVS_UKEY_EVIDENCE: ${{ github.workspace }}/tests/fixtures/evidence
+        run: python -m pytest -v

@@ -104,22 +104,31 @@ Run this validation only in a suitable test environment. Do not use production O
 
 ## Project flow
 
-Deterministic reproduction -> Automated verification -> GitHub Actions -> CI -> OpenStack -> End-to-end validation
+Deterministic reproduction -> Regression verification -> Hosted RPM build -> RPM artifact -> OpenStack -> End-to-end validation
 
-## Self-hosted GitHub Actions runner
+## Runtime reproduction runner
 
-The workflow requires a self-hosted runner labelled `self-hosted` and
-`ovs-ukey`. The configured runner needs the OVS build, disposable runtime,
-Python 3, pip, and the `gha-runner` account.
+The regular pull-request unit tests run on GitHub-hosted infrastructure and
+use the committed evidence fixtures in `tests/fixtures/evidence`.
+
+The real datapath reproduction remains separate in
+`.github/workflows/runtime-reproduction.yml`. It is a manual workflow and
+requires a self-hosted runner labelled `self-hosted` and `ovs-ukey`. That
+runner needs the disposable OVS runtime, Python 3, pip, and the
+`gha-runner` account.
 
 The workflow invokes `/usr/local/sbin/ovs-ukey-ci` through sudo. The current
-sudoers policy allows the runner to invoke that specific entry point:
+sudoers policy allows that specific entry point:
 
 `gha-runner ALL=(root) NOPASSWD: /usr/local/sbin/ovs-ukey-ci`
 
-That entry point delegates to `/usr/local/libexec/ovs-ukey-reproduce`.
-The reproduction script uses absolute paths specific to Compute1, so those
-paths and prerequisites must be provisioned before using another runner.
+The entry point delegates to `/usr/local/libexec/ovs-ukey-reproduce`, whose
+paths are specific to Compute1.
+
+**Resource warning:** the Compute1 self-hosted runner previously failed after
+a host-wide OOM event. It is not used for RPM builds or automatic pull-request
+tests. Do not restart it until host memory pressure and OpenStack workload
+capacity have been addressed.
 
 ## Safety
 
@@ -135,46 +144,96 @@ Install the test dependency with:
 
 ---
 
-## FastAPI Portal
+## FastAPI Portal and hosted RPM build
 
-The FastAPI portal submits OVS stale-UKEY automation requests through GitHub Actions.
+The FastAPI portal submits OVS RPM build requests through GitHub Actions.
 
 ### Features
-- Web form for source RPM URL and patch input.
-- Validates request inputs and supports a patch URL or patch content.
-- Dispatches the `ovs-ukey-build` repository event.
-- Provides a request-status endpoint.
-- Includes automated portal API tests.
+
+- Web form prefilled with the clean EL8 source RPM and tested stale-UKEY patch URLs.
+- Supports the published patch URL or patch content.
+- Dispatches the `ovs-ukey-build` repository event with a request UUID.
+- Builds in a GitHub-hosted runner using a Rocky Linux 8.10 container.
+- Uploads 9 binary RPMs, 1 source RPM, the build log, and SHA-256 manifest as a workflow artifact.
+- Provides a request-status endpoint that locates the matching workflow run.
+
+### Build inputs
+
+The clean base SRPM is the CentOS Stream 8 NFV archive package
+`openvswitch2.17-2.17.0-106.el8s.src.rpm` from the CentOS Vault snapshot.
+The workflow checks its published size (31,709,062 bytes) and RPM
+name/version/release before building.
+
+The tested stale-UKEY patch is distributed as a GitHub Release asset.
+The workflow verifies the patch SHA-256 against the hash used in the successful
+local build:
+
+`454abe3e7f6f48ba7543a6c5b636129f9d6e56422a15e7fc06f0215d4ffce4cc`
+
+The Release asset is published at tag
+`ovs-2.17.0-106.el8-build-inputs` with the filename
+`openvswitch-2.17.0-stale-ukey.patch`. Its SHA-256 is checked by the hosted
+workflow before the build starts.
 
 ### Architecture
 
-Browser -> FastAPI -> GitHub repository_dispatch -> OVS Portal Request workflow -> Input validation
+Browser -> FastAPI -> GitHub repository_dispatch -> OVS Portal RPM Build -> Rocky Linux 8.10 container -> RPM artifacts
 
-**Current limitation:** The portal workflow validates inputs only. It does not yet download source RPMs, apply patches, build RPMs, or execute stale-UKEY reproduction. The existing self-hosted reproduction workflow remains separate.
+### Hosted RPM build result
 
-Portal dispatch and workflow validation were tested successfully, and the local test suite passed 10 tests during verification.
+The first complete GitHub-hosted Rocky Linux 8.10 RPM build passed on
+November 2, 2026: [workflow run 41386001794](https://github.com/abhiwaycoder/ovs-ukey-automation/actions/runs/41386001794).
+It generated nine binary RPMs and one source RPM, passed `rpm -K` digest
+verification for all ten packages, and uploaded the RPMs, build log, and
+SHA-256 manifest as artifact `ovs-rpm-build-41386001794`. The ZIP artifact
+SHA-256 is
+`aff18e70c5bdd1f2eba75134b8aa4759e92aa25a3ca97de787935837fdd04a3a`.
+The artifact is retained for 14 days. See
+[evidence/hosted-rpm-build-41386001794.md](evidence/hosted-rpm-build-41386001794.md)
+for the run details and generated package checksums.
+
+This run used `--nocheck`; it did not execute the RPM spec `%check` suite.
+The generated RPMs are unsigned and have not been installed or runtime-tested.
+
+### Workflow behavior and limits
+
+The workflow installs BuildRequires from the clean SRPM, applies the vendor
+patch and stale-UKEY patch through the spec, builds with one job and
+`--nocheck`, verifies RPM digests, and uploads the resulting artifacts.
+
+The `%check` stage is skipped. The workflow does not sign RPMs, publish a
+package repository, install OVS, or run the datapath reproduction. Signing,
+deployment, and OpenStack runtime validation remain separate steps.
+
+The runtime reproduction workflow is separate and still requires a healthy,
+resource-appropriate self-hosted runner. The OOM-affected Compute1 runner is
+not used for hosted RPM building.
 
 ### Configuration
 
-Install dependencies:
+Install portal dependencies:
 
     python3 -m venv .venv
     . .venv/bin/activate
     python -m pip install -r requirements.txt
 
-Configure a local `.env` file with a fine-grained token restricted to `abhiwaycoder/ovs-ukey-automation`:
+Configure a local `.env` file with a fine-grained token restricted to
+`abhiwaycoder/ovs-ukey-automation` and permission to create repository
+dispatch events:
 
     GITHUB_TOKEN=<your-token>
     GITHUB_OWNER=abhiwaycoder
     GITHUB_REPO=ovs-ukey-automation
 
-Use `chmod 600 .env`. Never commit or disclose the token. Load these variables into the service process before starting the portal.
+Use `chmod 600 .env`. Never commit or disclose the token. Load these
+variables into the service process before starting the portal.
 
 ### Start the portal
 
     .venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000
 
-Open `http://127.0.0.1:8000/`. The health endpoint is `/health`, and interactive API documentation is available at `/docs`.
+Open `http://127.0.0.1:8000/`. The health endpoint is `/health`, and
+interactive API documentation is available at `/docs`.
 
 ### API endpoints
 
@@ -182,23 +241,22 @@ Open `http://127.0.0.1:8000/`. The health endpoint is `/health`, and interactive
 |---|---|---|
 | GET | `/` | Portal web form |
 | GET | `/health` | Health check |
-| POST | `/build` | Validate and dispatch a request |
-| GET | `/build/{request_id}` | Query workflow status |
-
-The `/build` endpoint currently dispatches a validation request; it does not build an RPM.
+| POST | `/build` | Dispatch an RPM build request |
+| GET | `/build/{request_id}` | Query the matching GitHub Actions run |
 
 ### Tests
 
     .venv/bin/python -m pytest -v
 
-Passing local tests does not replace validation on the configured disposable OVS test runtime.
+Passing local tests does not replace validation on the configured disposable
+OVS runtime.
 
 ### Portal safety
-- Use only the configured disposable runtime for reproduction.
-- Never point scripts at production OVS sockets or databases.
-- Do not restart production OVS services as part of testing.
-- Do not submit real build requests until build execution and its safety controls are implemented and reviewed.
-- Keep credentials out of version control and preserve existing backup files.
+
+- The hosted builder only builds packages; it does not install or start OVS.
+- Never point reproduction scripts at production OVS sockets or databases.
+- Keep credentials out of version control.
+- Use only the validated source RPM and tested stale-UKEY patch inputs.
 
 ---
 
@@ -207,3 +265,14 @@ Passing local tests does not replace validation on the configured disposable OVS
 The EL8.10 package build and validation status, including the focused regression result and the unresolved full-suite resource failure, are documented in [docs/BUILD_AND_TEST_RESULTS.md](docs/BUILD_AND_TEST_RESULTS.md).
 
 **Package status:** Nine binary RPMs and one source RPM were generated successfully for `2.17.0-106.el8`. The build used `rpmbuild --nocheck`, so the RPM `%check` stage was skipped and is not claimed as passed. All ten RPM files passed `rpm -K` digest verification. SHA-256 values are recorded in [evidence/el8.10-rpm-SHA256SUMS](evidence/el8.10-rpm-SHA256SUMS). The RPMs are unsigned.
+
+### Repeatable RPM build script
+
+A parameterized build script is now available at [scripts/build_rpm.sh](scripts/build_rpm.sh). It starts from a clean source RPM, adds the stale-UKEY patch as `Patch1`, builds in a separate top directory, verifies RPM digests, and generates a checksum manifest. See [docs/REPEATABLE_RPM_BUILD.md](docs/REPEATABLE_RPM_BUILD.md) for prerequisites and usage.
+
+The script defaults to one build job and skips `%check`; add `--with-check` to run it. It does not download inputs, sign RPMs, install packages, or run the OVS reproduction.
+
+
+### Build script validation evidence
+
+The repository build script has been executed successfully in the Rocky Linux 8.10 container. It generated nine binary RPMs and one source RPM; all ten passed `rpm -K` digest checks. The run used the default `--nocheck` mode, so it does not establish a passing `%check` suite. See [the script validation report](evidence/repeatable-rpm-build-validation.md).
