@@ -47,7 +47,7 @@ jobs:
             --output inputs/openvswitch-2.17.0-stale-ukey.patch \
             https://github.com/abhiwaycoder/ovs-ukey-automation/releases/download/ovs-2.17.0-106.el8-build-inputs/openvswitch-2.17.0-stale-ukey.patch
 
-          echo "922166c191d27f7e7c4b431a242bb5a57a0a9c19f378b14633857c433d3139ce  inputs/openvswitch2.17-2.17.0-106.el8s.src.rpm" | sha256sum -c -
+          echo "08877953e28ebb29c0ab9cb474d9c952babaf7c94210490ec1f988d0173ed609  inputs/openvswitch2.17-2.17.0-106.el8s.src.rpm" | sha256sum -c -
 
           echo "454abe3e7f6f48ba7543a6c5b636129f9d6e56422a15e7fc06f0215d4ffce4cc  inputs/openvswitch-2.17.0-stale-ukey.patch" | sha256sum -c -
 
