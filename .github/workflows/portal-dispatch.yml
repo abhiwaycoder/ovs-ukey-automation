@@ -3,9 +3,6 @@ name: OVS Portal RPM Build
 run-name: OVS Portal ${{ github.event.client_payload.request_id || github.run_id }}
 
 on:
-  push:
-    branches:
-      - automation/repeatable-rpm-build-2026-11-02
   repository_dispatch:
     types:
       - ovs-ukey-build
