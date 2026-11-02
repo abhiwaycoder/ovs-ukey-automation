@@ -1,0 +1,134 @@
+name: OVS RPM Build with Tests
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ovs-ukey-rpm-check-validation
+  cancel-in-progress: false
+
+jobs:
+  rpm-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+
+    container:
+      image: quay.io/rockylinux/rockylinux:8.10
+
+    steps:
+      - name: Install Git and RPM build tooling
+        shell: bash
+        run: |
+          set -euo pipefail
+          dnf -y install \
+            dnf-plugins-core rpm-build rpmdevtools cpio \
+            curl ca-certificates git tar gzip make gcc gcc-c++
+
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Download and verify source RPM and patch
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p inputs
+
+          curl --fail --show-error --location --retry 3 \
+            --proto '=https' --proto-redir '=https' \
+            --output inputs/openvswitch2.17-2.17.0-106.el8s.src.rpm \
+            https://vault.centos.org/8-stream/nfv/Source/openvswitch-2/openvswitch2.17-2.17.0-106.el8s.src.rpm
+
+          curl --fail --show-error --location --retry 3 \
+            --proto '=https' --proto-redir '=https' \
+            --output inputs/openvswitch-2.17.0-stale-ukey.patch \
+            https://github.com/abhiwaycoder/ovs-ukey-automation/releases/download/ovs-2.17.0-106.el8-build-inputs/openvswitch-2.17.0-stale-ukey.patch
+
+          echo "922166c191d27f7e7c4b431a242bb5a57a0a9c19f378b14633857c433d3139ce  inputs/openvswitch2.17-2.17.0-106.el8s.src.rpm" | sha256sum -c -
+
+          echo "454abe3e7f6f48ba7543a6c5b636129f9d6e56422a15e7fc06f0215d4ffce4cc  inputs/openvswitch-2.17.0-stale-ukey.patch" | sha256sum -c -
+
+      - name: Install SRPM build dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          dnf config-manager --set-enabled powertools || true
+
+          dnf builddep -y \
+            inputs/openvswitch2.17-2.17.0-106.el8s.src.rpm \
+            2>&1 | tee builddep.log
+
+      - name: Verify userspace check is enabled in spec
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p spec-inspection
+
+          rpm2cpio inputs/openvswitch2.17-2.17.0-106.el8s.src.rpm |
+            (cd spec-inspection && cpio -idm --quiet)
+
+          SPEC="$(find spec-inspection -maxdepth 1 -type f -name '*.spec' -print -quit)"
+          test -n "$SPEC"
+
+          rpmspec --parse "$SPEC" > spec-inspection/expanded.spec
+
+          grep -F 'make check TESTSUITEFLAGS=' \
+            spec-inspection/expanded.spec
+
+          echo "PASS: RPM spec includes the userspace make check section."
+
+      - name: Build RPMs with %check enabled
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          bash scripts/build_rpm.sh \
+            --srpm inputs/openvswitch2.17-2.17.0-106.el8s.src.rpm \
+            --patch inputs/openvswitch-2.17.0-stale-ukey.patch \
+            --topdir "$GITHUB_WORKSPACE/rpm-check-output" \
+            --jobs 1 \
+            --with-check \
+            2>&1 | tee build-invocation.log
+
+      - name: Publish test summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "# OVS RPM %check validation"
+            echo
+            echo "- Build environment: Rocky Linux 8.10"
+            echo "- RPM build parallelism: 1"
+            echo "- Userspace %check: enabled (--with-check)"
+            echo "- Kernel datapath tests: not enabled"
+            echo "- Job result: ${{ job.status }}"
+            echo
+
+            if [ -f rpm-check-output/build.log ]; then
+              echo "## Build output"
+              grep -E 'Wrote:|error:|Error |Testsuite summary|FAIL:' \
+                rpm-check-output/build.log | tail -100 || true
+            fi
+
+            echo
+            echo "## Test logs found"
+            find rpm-check-output -name testsuite.log -o -name '*.log' \
+              2>/dev/null | head -100 || true
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload build and test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ovs-rpm-check-validation-${{ github.run_id }}
+          path: |
+            builddep.log
+            build-invocation.log
+            rpm-check-output/
+          if-no-files-found: warn
+          retention-days: 30
