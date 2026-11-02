@@ -206,4 +206,4 @@ Passing local tests does not replace validation on the configured disposable OVS
 
 The EL8.10 package build and validation status, including the focused regression result and the unresolved full-suite resource failure, are documented in [docs/BUILD_AND_TEST_RESULTS.md](docs/BUILD_AND_TEST_RESULTS.md).
 
-**Package status:** No RPM artifact has been generated yet. Do not treat the `%check` stage as passed. A package created with `rpmbuild --nocheck` must be clearly identified as having skipped `%check`.
+**Package status:** Nine binary RPMs and one source RPM were generated successfully for `2.17.0-106.el8`. The build used `rpmbuild --nocheck`, so the RPM `%check` stage was skipped and is not claimed as passed. All ten RPM files passed `rpm -K` digest verification. SHA-256 values are recorded in [evidence/el8.10-rpm-SHA256SUMS](evidence/el8.10-rpm-SHA256SUMS). The RPMs are unsigned.
