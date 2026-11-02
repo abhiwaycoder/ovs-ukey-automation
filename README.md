@@ -106,20 +106,29 @@ Run this validation only in a suitable test environment. Do not use production O
 
 Deterministic reproduction -> Regression verification -> Hosted RPM build -> RPM artifact -> OpenStack -> End-to-end validation
 
-## Self-hosted GitHub Actions runner
+## Runtime reproduction runner
 
-The workflow requires a self-hosted runner labelled `self-hosted` and
-`ovs-ukey`. The configured runner needs the OVS build, disposable runtime,
-Python 3, pip, and the `gha-runner` account.
+The regular pull-request unit tests run on GitHub-hosted infrastructure and
+use the committed evidence fixtures in `tests/fixtures/evidence`.
+
+The real datapath reproduction remains separate in
+`.github/workflows/runtime-reproduction.yml`. It is a manual workflow and
+requires a self-hosted runner labelled `self-hosted` and `ovs-ukey`. That
+runner needs the disposable OVS runtime, Python 3, pip, and the
+`gha-runner` account.
 
 The workflow invokes `/usr/local/sbin/ovs-ukey-ci` through sudo. The current
-sudoers policy allows the runner to invoke that specific entry point:
+sudoers policy allows that specific entry point:
 
 `gha-runner ALL=(root) NOPASSWD: /usr/local/sbin/ovs-ukey-ci`
 
-That entry point delegates to `/usr/local/libexec/ovs-ukey-reproduce`.
-The reproduction script uses absolute paths specific to Compute1, so those
-paths and prerequisites must be provisioned before using another runner.
+The entry point delegates to `/usr/local/libexec/ovs-ukey-reproduce`, whose
+paths are specific to Compute1.
+
+**Resource warning:** the Compute1 self-hosted runner previously failed after
+a host-wide OOM event. It is not used for RPM builds or automatic pull-request
+tests. Do not restart it until host memory pressure and OpenStack workload
+capacity have been addressed.
 
 ## Safety
 
