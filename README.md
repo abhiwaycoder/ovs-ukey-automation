@@ -170,14 +170,30 @@ local build:
 
 `454abe3e7f6f48ba7543a6c5b636129f9d6e56422a15e7fc06f0215d4ffce4cc`
 
-The Release asset must be created at tag
+The Release asset is published at tag
 `ovs-2.17.0-106.el8-build-inputs` with the filename
-`openvswitch-2.17.0-stale-ukey.patch`. Until that asset is uploaded, the
-hosted build workflow cannot complete its input validation.
+`openvswitch-2.17.0-stale-ukey.patch`. Its SHA-256 is checked by the hosted
+workflow before the build starts.
 
 ### Architecture
 
 Browser -> FastAPI -> GitHub repository_dispatch -> OVS Portal RPM Build -> Rocky Linux 8.10 container -> RPM artifacts
+
+### Hosted RPM build result
+
+The first complete GitHub-hosted Rocky Linux 8.10 RPM build passed on
+November 2, 2026: [workflow run 41386001794](https://github.com/abhiwaycoder/ovs-ukey-automation/actions/runs/41386001794).
+It generated nine binary RPMs and one source RPM, passed `rpm -K` digest
+verification for all ten packages, and uploaded the RPMs, build log, and
+SHA-256 manifest as artifact `ovs-rpm-build-41386001794`. The ZIP artifact
+SHA-256 is
+`aff18e70c5bdd1f2eba75134b8aa4759e92aa25a3ca97de787935837fdd04a3a`.
+The artifact is retained for 14 days. See
+[evidence/hosted-rpm-build-41386001794.md](evidence/hosted-rpm-build-41386001794.md)
+for the run details and generated package checksums.
+
+This run used `--nocheck`; it did not execute the RPM spec `%check` suite.
+The generated RPMs are unsigned and have not been installed or runtime-tested.
 
 ### Workflow behavior and limits
 
