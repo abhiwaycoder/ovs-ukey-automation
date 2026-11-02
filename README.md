@@ -140,6 +140,7 @@ Install the test dependency with:
 The FastAPI portal submits OVS stale-UKEY automation requests through GitHub Actions.
 
 ### Features
+
 - Web form for source RPM URL and patch input.
 - Validates request inputs and supports a patch URL or patch content.
 - Dispatches the `ovs-ukey-build` repository event.
@@ -194,6 +195,7 @@ The `/build` endpoint currently dispatches a validation request; it does not bui
 Passing local tests does not replace validation on the configured disposable OVS test runtime.
 
 ### Portal safety
+
 - Use only the configured disposable runtime for reproduction.
 - Never point scripts at production OVS sockets or databases.
 - Do not restart production OVS services as part of testing.
@@ -207,3 +209,9 @@ Passing local tests does not replace validation on the configured disposable OVS
 The EL8.10 package build and validation status, including the focused regression result and the unresolved full-suite resource failure, are documented in [docs/BUILD_AND_TEST_RESULTS.md](docs/BUILD_AND_TEST_RESULTS.md).
 
 **Package status:** Nine binary RPMs and one source RPM were generated successfully for `2.17.0-106.el8`. The build used `rpmbuild --nocheck`, so the RPM `%check` stage was skipped and is not claimed as passed. All ten RPM files passed `rpm -K` digest verification. SHA-256 values are recorded in [evidence/el8.10-rpm-SHA256SUMS](evidence/el8.10-rpm-SHA256SUMS). The RPMs are unsigned.
+
+### Repeatable RPM build script
+
+A parameterized build script is now available at [scripts/build_rpm.sh](scripts/build_rpm.sh). It starts from a clean source RPM, adds the stale-UKEY patch as `Patch1`, builds in a separate top directory, verifies RPM digests, and generates a checksum manifest. See [docs/REPEATABLE_RPM_BUILD.md](docs/REPEATABLE_RPM_BUILD.md) for prerequisites and usage.
+
+The script defaults to one build job and skips `%check`; add `--with-check` to run it. It does not download inputs, sign RPMs, install packages, or run the OVS reproduction.
