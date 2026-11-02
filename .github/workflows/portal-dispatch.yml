@@ -112,14 +112,13 @@ jobs:
           set -euo pipefail
           dnf -y install dnf-plugins-core rpm-build rpmdevtools cpio curl ca-certificates git tar gzip make gcc gcc-c++
           dnf config-manager --set-enabled powertools || true
-          dnf builddep -y "$SRPM_FILE"
 
       - name: Download and verify clean source RPM
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p "$(dirname "$SRPM_FILE")"
-          curl --fail --location --retry 3 --retry-all-errors \
+          curl --fail --location --retry 3 \
             --proto '=https' --proto-redir '=https' \
             --max-time 600 --output "$SRPM_FILE" "$SRC_RPM_URL"
 
@@ -132,6 +131,12 @@ jobs:
           # Verify RPM digests without claiming the signing key is trusted.
           rpm -K --nosignature "$SRPM_FILE"
           sha256sum "$SRPM_FILE"
+
+      - name: Install source RPM BuildRequires
+        shell: bash
+        run: |
+          set -euo pipefail
+          dnf builddep -y "$SRPM_FILE"
 
       - name: Download and verify tested stale-UKEY patch
         shell: bash
