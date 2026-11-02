@@ -215,3 +215,8 @@ The EL8.10 package build and validation status, including the focused regression
 A parameterized build script is now available at [scripts/build_rpm.sh](scripts/build_rpm.sh). It starts from a clean source RPM, adds the stale-UKEY patch as `Patch1`, builds in a separate top directory, verifies RPM digests, and generates a checksum manifest. See [docs/REPEATABLE_RPM_BUILD.md](docs/REPEATABLE_RPM_BUILD.md) for prerequisites and usage.
 
 The script defaults to one build job and skips `%check`; add `--with-check` to run it. It does not download inputs, sign RPMs, install packages, or run the OVS reproduction.
+
+
+### Build script validation evidence
+
+The repository build script has been executed successfully in the Rocky Linux 8.10 container. It generated nine binary RPMs and one source RPM; all ten passed `rpm -K` digest checks. The run used the default `--nocheck` mode, so it does not establish a passing `%check` suite. See [the script validation report](evidence/repeatable-rpm-build-validation.md).
