@@ -104,7 +104,7 @@ Run this validation only in a suitable test environment. Do not use production O
 
 ## Project flow
 
-Deterministic reproduction -> Automated verification -> GitHub Actions -> CI -> OpenStack -> End-to-end validation
+Deterministic reproduction -> Regression verification -> Hosted RPM build -> RPM artifact -> OpenStack -> End-to-end validation
 
 ## Self-hosted GitHub Actions runner
 
@@ -135,47 +135,80 @@ Install the test dependency with:
 
 ---
 
-## FastAPI Portal
+## FastAPI Portal and hosted RPM build
 
-The FastAPI portal submits OVS stale-UKEY automation requests through GitHub Actions.
+The FastAPI portal submits OVS RPM build requests through GitHub Actions.
 
 ### Features
 
-- Web form for source RPM URL and patch input.
-- Validates request inputs and supports a patch URL or patch content.
-- Dispatches the `ovs-ukey-build` repository event.
-- Provides a request-status endpoint.
-- Includes automated portal API tests.
+- Web form prefilled with the clean EL8 source RPM and tested stale-UKEY patch URLs.
+- Supports the published patch URL or patch content.
+- Dispatches the `ovs-ukey-build` repository event with a request UUID.
+- Builds in a GitHub-hosted runner using a Rocky Linux 8.10 container.
+- Uploads 9 binary RPMs, 1 source RPM, the build log, and SHA-256 manifest as a workflow artifact.
+- Provides a request-status endpoint that locates the matching workflow run.
+
+### Build inputs
+
+The clean base SRPM is the CentOS Stream 8 NFV archive package
+`openvswitch2.17-2.17.0-106.el8s.src.rpm` from the CentOS Vault snapshot.
+The workflow checks its published size (31,709,062 bytes) and RPM
+name/version/release before building.
+
+The tested stale-UKEY patch is distributed as a GitHub Release asset.
+The workflow verifies the patch SHA-256 against the hash used in the successful
+local build:
+
+`454abe3e7f6f48ba7543a6c5b636129f9d6e56422a15e7fc06f0215d4ffce4cc`
+
+The Release asset must be created at tag
+`ovs-2.17.0-106.el8-build-inputs` with the filename
+`openvswitch-2.17.0-stale-ukey.patch`. Until that asset is uploaded, the
+hosted build workflow cannot complete its input validation.
 
 ### Architecture
 
-Browser -> FastAPI -> GitHub repository_dispatch -> OVS Portal Request workflow -> Input validation
+Browser -> FastAPI -> GitHub repository_dispatch -> OVS Portal RPM Build -> Rocky Linux 8.10 container -> RPM artifacts
 
-**Current limitation:** The portal workflow validates inputs only. It does not yet download source RPMs, apply patches, build RPMs, or execute stale-UKEY reproduction. The existing self-hosted reproduction workflow remains separate.
+### Workflow behavior and limits
 
-Portal dispatch and workflow validation were tested successfully, and the local test suite passed 10 tests during verification.
+The workflow installs BuildRequires from the clean SRPM, applies the vendor
+patch and stale-UKEY patch through the spec, builds with one job and
+`--nocheck`, verifies RPM digests, and uploads the resulting artifacts.
+
+The `%check` stage is skipped. The workflow does not sign RPMs, publish a
+package repository, install OVS, or run the datapath reproduction. Signing,
+deployment, and OpenStack runtime validation remain separate steps.
+
+The runtime reproduction workflow is separate and still requires a healthy,
+resource-appropriate self-hosted runner. The OOM-affected Compute1 runner is
+not used for hosted RPM building.
 
 ### Configuration
 
-Install dependencies:
+Install portal dependencies:
 
     python3 -m venv .venv
     . .venv/bin/activate
     python -m pip install -r requirements.txt
 
-Configure a local `.env` file with a fine-grained token restricted to `abhiwaycoder/ovs-ukey-automation`:
+Configure a local `.env` file with a fine-grained token restricted to
+`abhiwaycoder/ovs-ukey-automation` and permission to create repository
+dispatch events:
 
     GITHUB_TOKEN=<your-token>
     GITHUB_OWNER=abhiwaycoder
     GITHUB_REPO=ovs-ukey-automation
 
-Use `chmod 600 .env`. Never commit or disclose the token. Load these variables into the service process before starting the portal.
+Use `chmod 600 .env`. Never commit or disclose the token. Load these
+variables into the service process before starting the portal.
 
 ### Start the portal
 
     .venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000
 
-Open `http://127.0.0.1:8000/`. The health endpoint is `/health`, and interactive API documentation is available at `/docs`.
+Open `http://127.0.0.1:8000/`. The health endpoint is `/health`, and
+interactive API documentation is available at `/docs`.
 
 ### API endpoints
 
@@ -183,24 +216,22 @@ Open `http://127.0.0.1:8000/`. The health endpoint is `/health`, and interactive
 |---|---|---|
 | GET | `/` | Portal web form |
 | GET | `/health` | Health check |
-| POST | `/build` | Validate and dispatch a request |
-| GET | `/build/{request_id}` | Query workflow status |
-
-The `/build` endpoint currently dispatches a validation request; it does not build an RPM.
+| POST | `/build` | Dispatch an RPM build request |
+| GET | `/build/{request_id}` | Query the matching GitHub Actions run |
 
 ### Tests
 
     .venv/bin/python -m pytest -v
 
-Passing local tests does not replace validation on the configured disposable OVS test runtime.
+Passing local tests does not replace validation on the configured disposable
+OVS runtime.
 
 ### Portal safety
 
-- Use only the configured disposable runtime for reproduction.
-- Never point scripts at production OVS sockets or databases.
-- Do not restart production OVS services as part of testing.
-- Do not submit real build requests until build execution and its safety controls are implemented and reviewed.
-- Keep credentials out of version control and preserve existing backup files.
+- The hosted builder only builds packages; it does not install or start OVS.
+- Never point reproduction scripts at production OVS sockets or databases.
+- Keep credentials out of version control.
+- Use only the validated source RPM and tested stale-UKEY patch inputs.
 
 ---
 
