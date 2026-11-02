@@ -142,8 +142,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if [ "\${PATCH_IS_LOCAL:-false}" != "true" ]; then
-            curl --fail --location --retry 3 --retry-all-errors \
+          if [ "$PATCH_IS_LOCAL" != "true" ]; then
+            curl --fail --location --retry 3 \
               --proto '=https' --proto-redir '=https' \
               --max-time 120 --output "$PATCH_FILE" "$PATCH_DOWNLOAD_URL"
           fi
