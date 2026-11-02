@@ -76,3 +76,10 @@ steps.
   `%check` suite. Record that qualification in build reports and release notes.
 - Use a suitable host with adequate memory for `--with-check`; the prior full
   test run on the 3 GiB Compute1 host experienced global OOM pressure.
+
+
+## Script execution evidence
+
+The repository build script was executed successfully in the Rocky Linux 8.10 container with the clean original source RPM and stale-UKEY patch. It generated nine binary RPMs and one source RPM; all ten passed `rpm -K` digest verification. The default `--nocheck` mode was used, so the spec `%check` stage was skipped.
+
+See [evidence/repeatable-rpm-build-validation.md](../evidence/repeatable-rpm-build-validation.md) for the exact invocation, artifact sizes, and SHA-256 values.
