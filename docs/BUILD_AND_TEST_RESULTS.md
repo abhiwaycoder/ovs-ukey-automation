@@ -44,15 +44,57 @@ The remaining failure was test 1996, `monitor-cond-change with many sessions pen
 
 The complete suite has **not** been rerun after the OpenSSL installation. Consequently, this report does not claim a clean full-suite result or a successful RPM `%check` stage.
 
-## RPM artifact status
+## RPM build result
 
-The inventory checked on 2026-10-30 found no binary RPM or source RPM in the configured `RPMS/` and `SRPMS/` output directories. The original RPM build reached `%check` and exited with a failure. A package must still be generated.
+The RPM build completed successfully in the EL8.10-compatible Rocky Linux 8.10 container on 2026-10-30. The command used `rpmbuild --nocheck -ba SPECS/openvswitch2.17.spec`; therefore, the RPM build stages completed, but the spec's `%check` tests were explicitly skipped.
 
-If a package is subsequently built with `rpmbuild --nocheck`, it must be labelled as a build with `%check` skipped. That package must not be represented as having passed the complete RPM validation suite.
+- Package NEVRA: `openvswitch2.17-2.17.0-106.el8.x86_64`
+- Build host: `7eb24923af24` (container hostname)
+- Build date: 2026-10-30 20:39:58 UTC
+- Binary RPMs: 9
+- Source RPMs: 1
+- RPM signature: none (unsigned)
+- RPM integrity: `rpm -K` reported `digests OK` for all 10 RPM files
+
+This is a successful package build with `%check` skipped. It is **not** a claim that the complete test suite or RPM `%check` passed.
+
+### Generated RPM artifacts
+
+| Package | Architecture | Size (bytes) |
+|---|---:|---:|
+| `openvswitch2.17` | x86_64 | 6,828,948 |
+| `python3-openvswitch2.17` | x86_64 | 314,328 |
+| `openvswitch2.17-devel` | x86_64 | 221,016 |
+| `network-scripts-openvswitch2.17` | x86_64 | 90,996 |
+| `openvswitch2.17-ipsec` | x86_64 | 99,376 |
+| `openvswitch2.17-debugsource` | x86_64 | 7,022,236 |
+| `openvswitch2.17-debuginfo` | x86_64 | 29,141,452 |
+| `python3-openvswitch2.17-debuginfo` | x86_64 | 104,632 |
+| `openvswitch2.17-test` | noarch | 137,392 |
+| `openvswitch2.17` source package | src | 31,710,916 |
+
+### SHA-256 checksums
+
+The following values were calculated from the generated RPM files. All ten files passed `rpm -K` digest verification.
+
+```text
+f66a082faffdafb38cbaa422158a04c49d473a67cb8917c91318ac7c838ece4d  openvswitch2.17-2.17.0-106.el8.x86_64.rpm
+7e51affc22772a5dbde15c15cf736132594c2642178d240a7049c50c5d2ff8fa  python3-openvswitch2.17-2.17.0-106.el8.x86_64.rpm
+caf9e1b80de0ab98e604cad867ba9aa1348c0365c480437c7fb75a4e0b22364c  openvswitch2.17-devel-2.17.0-106.el8.x86_64.rpm
+8f4881ab60079894b869496c275c1884e7b246264f350d5447b7d1d4407e8cbd  network-scripts-openvswitch2.17-2.17.0-106.el8.x86_64.rpm
+6382821ed4123e918bf0c5a5436592f43e7a763a8af3679721b514368ee6efbf  openvswitch2.17-ipsec-2.17.0-106.el8.x86_64.rpm
+4a44f3451a4f021d2689c3ce0dbbb57310bb2230c13d0c7fd10720b3dc9ffe5d  openvswitch2.17-debugsource-2.17.0-106.el8.x86_64.rpm
+97d79d224ac47e4cb6d502b920f16ed6d67773d6a433a462483fa020faba6b6a  openvswitch2.17-debuginfo-2.17.0-106.el8.x86_64.rpm
+b234e31c86107b814524aaa410790feb5a6cefe54096670031c69544d7ecd46b  python3-openvswitch2.17-debuginfo-2.17.0-106.el8.x86_64.rpm
+d3da63cb67e7b69444ccc385fc1df076d1558bb8103f1e3014db620aaf257e19  openvswitch2.17-test-2.17.0-106.el8.noarch.rpm
+64307587bde2a4e0b8b273aa5b976fc851f9b36cd285b5846288715b4ab589cc  openvswitch2.17-2.17.0-106.el8.src.rpm
+```
+
+A copy of the checksum list is maintained in [evidence/el8.10-rpm-SHA256SUMS](../evidence/el8.10-rpm-SHA256SUMS).
 
 ## Recommended next validation
 
-Repeat the complete serial `%check` on a host with sufficient available memory and low competing workload. Then run the full RPM build with checks enabled and record the final suite summary, RPM metadata, file size, and SHA-256 checksum.
+Repeat the complete serial `%check` on a host with sufficient available memory and low competing workload. Then perform a full RPM build with checks enabled and record the final suite summary. Until that is done, distribute this package only with the explicit `--nocheck` qualification.
 
 ## Integrity
 
