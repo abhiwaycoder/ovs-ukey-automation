@@ -1,5 +1,4 @@
 import os
-import re
 import uuid
 from typing import Optional
 from urllib.error import HTTPError, URLError
@@ -8,18 +7,24 @@ from urllib.request import Request, urlopen
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, model_validator
 
 
 DEFAULT_SRC_RPM_URL = (
-    "https://example.invalid/openvswitch-2.17.0-106.el8.src.rpm"
+    "https://vault.centos.org/8-stream/nfv/Source/openvswitch-2/"
+    "openvswitch2.17-2.17.0-106.el8s.src.rpm"
+)
+DEFAULT_PATCH_URL = (
+    "https://github.com/abhiwaycoder/ovs-ukey-automation/releases/"
+    "download/ovs-2.17.0-106.el8-build-inputs/"
+    "openvswitch-2.17.0-stale-ukey.patch"
 )
 GITHUB_API = "https://api.github.com"
 
 app = FastAPI(
     title="OVS UKEY Automation Portal",
-    description="Submit and monitor OVS automation workflow requests.",
-    version="0.1.0",
+    description="Submit and monitor OVS RPM build requests.",
+    version="0.2.0",
 )
 
 
@@ -38,12 +43,10 @@ class BuildRequest(BaseModel):
             raise ValueError("src_rpm_url must point to a .src.rpm file")
 
         if self.patch_url and self.patch_content:
-            raise ValueError(
-                "Provide patch_url or patch_content, not both"
-            )
+            raise ValueError("Provide patch_url or patch_content, not both")
 
         if not self.patch_url and not self.patch_content:
-            raise ValueError("Provide patch_url or patch_content")
+            self.patch_url = DEFAULT_PATCH_URL
 
         if self.patch_url:
             patch = urlparse(self.patch_url)
@@ -54,7 +57,9 @@ class BuildRequest(BaseModel):
             if not self.patch_content.strip():
                 raise ValueError("patch_content cannot be empty")
             if len(self.patch_content.encode("utf-8")) > 48_000:
-                raise ValueError("patch_content exceeds 48 KB; use patch_url for larger patches")
+                raise ValueError(
+                    "patch_content exceeds 48 KB; use patch_url for larger patches"
+                )
 
         return self
 
@@ -131,21 +136,21 @@ def home():
 </head>
 <body>
   <h1>OVS UKEY Automation Portal</h1>
-  <p>Submit a source RPM and a patch to request a GitHub Actions run.</p>
+  <p>Submit a clean source RPM and the tested stale-UKEY patch to build RPM artifacts.</p>
   <form id="build-form">
     <label for="src_rpm_url">Source RPM URL</label>
     <input id="src_rpm_url" name="src_rpm_url" type="url" required
-      value="https://example.invalid/openvswitch-2.17.0-106.el8.src.rpm">
+      value="https://vault.centos.org/8-stream/nfv/Source/openvswitch-2/openvswitch2.17-2.17.0-106.el8s.src.rpm">
 
-    <label for="patch_url">Patch URL (HTTPS)</label>
+    <label for="patch_url">Tested patch URL (HTTPS)</label>
     <input id="patch_url" name="patch_url" type="url"
-      placeholder="https://example.com/fix.patch">
+      value="https://github.com/abhiwaycoder/ovs-ukey-automation/releases/download/ovs-2.17.0-106.el8-build-inputs/openvswitch-2.17.0-stale-ukey.patch">
 
     <label for="patch_content">Or paste patch content</label>
     <textarea id="patch_content" name="patch_content"
-      placeholder="Paste a unified diff here"></textarea>
+      placeholder="Paste the exact tested unified diff here"></textarea>
 
-    <button type="submit">Submit workflow request</button>
+    <button type="submit">Submit RPM build request</button>
   </form>
   <h2>Response</h2>
   <pre id="result">No request submitted yet.</pre>
@@ -160,10 +165,10 @@ def home():
         const patchContent =
           document.getElementById("patch_content").value;
         const payload = {src_rpm_url: src};
-        if (patchUrl) payload.patch_url = patchUrl;
-        else if (patchContent.trim()) payload.patch_content = patchContent;
+        if (patchContent.trim()) payload.patch_content = patchContent;
+        else if (patchUrl) payload.patch_url = patchUrl;
         else {
-          result.textContent = "Provide a patch URL or patch content.";
+          result.textContent = "Provide the tested patch URL or patch content.";
           return;
         }
         try {
@@ -209,15 +214,14 @@ def submit_build(request: BuildRequest):
         "request_id": request_id,
         "status": "dispatched",
         "message": (
-            "GitHub accepted the dispatch event. Workflow status tracking "
-            "requires the workflow to expose this request ID."
+            "GitHub accepted the RPM build request. Use GET /build/"
+            f"{request_id} to track the GitHub Actions build."
         ),
     }
 
 
 @app.get("/build/{request_id}")
 def build_status(request_id: str):
-    # Validate the identifier before using it in any API query.
     try:
         uuid.UUID(request_id)
     except ValueError as exc:
@@ -228,8 +232,6 @@ def build_status(request_id: str):
     expected_name = f"OVS Portal {request_id}"
     max_pages = 5
 
-    # Search a bounded number of pages so older runs can be found without
-    # allowing one status request to query GitHub indefinitely.
     for page in range(1, max_pages + 1):
         _, body = github_request(
             "GET",
