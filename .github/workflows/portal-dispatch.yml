@@ -41,6 +41,10 @@ jobs:
       PATCH_FILE: ${{ github.workspace }}/inputs/openvswitch-2.17.0-stale-ukey.patch
 
     steps:
+      - name: Install Git and Python for Actions steps
+        shell: bash
+        run: dnf -y install git python3 ca-certificates
+
       - name: Check out automation repository
         uses: actions/checkout@v4
 
@@ -106,7 +110,7 @@ jobs:
           print("The build will use one job and skip %check.")
           PY
 
-      - name: Install RPM build tooling and source RPM dependencies
+      - name: Install RPM build tooling
         shell: bash
         run: |
           set -euo pipefail
