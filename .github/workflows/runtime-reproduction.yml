@@ -1,0 +1,49 @@
+name: OVS UKEY Runtime Reproduction
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  reproduce:
+    runs-on:
+      - self-hosted
+      - ovs-ukey
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Verify Python
+        run: |
+          python3 --version
+          python3 -m pip --version
+
+      - name: Install Python test dependencies
+        run: python3 -m pip install --user -r requirements.txt
+
+      - name: Run real stale-UKEY reproduction
+        run: sudo -n /usr/local/sbin/ovs-ukey-ci
+
+      - name: Verify real runtime evidence
+        run: |
+          set -euo pipefail
+          evidence=/var/lib/ovs-ukey-ci/evidence
+
+          test -f "$evidence/dp-final.txt"
+          test -s "$evidence/upcall-final.txt"
+          test -s "$evidence/ovs-vswitchd.log"
+          test -s "$evidence/stale-ukey-debug.log"
+          test -s "$evidence/coverage-final.txt"
+
+          for count in 1 2 3 4; do
+            grep -q "missed_dumps=$count" "$evidence/stale-ukey-debug.log"
+          done
+
+          grep -q 'revalidate_missing_dp_flow' "$evidence/coverage-final.txt"
+
+      - name: Run pytest against real runtime evidence
+        env:
+          OVS_UKEY_EVIDENCE: /var/lib/ovs-ukey-ci/evidence
+        run: python3 -m pytest -v
