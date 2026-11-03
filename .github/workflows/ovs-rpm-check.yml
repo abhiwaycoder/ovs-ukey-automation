@@ -2,6 +2,10 @@ name: OVS RPM Build with Tests
 
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/ovs-rpm-check.yml
+      - scripts/build_rpm.sh
 
 permissions:
   contents: read
