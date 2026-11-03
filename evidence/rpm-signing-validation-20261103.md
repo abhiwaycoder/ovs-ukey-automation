@@ -36,7 +36,7 @@ A project-specific OpenPGP signing key was created for this manual signing opera
 
 The private key was kept in a separate GPG home on the signing workstation and was not placed in the repository, GitHub Actions, or the RPM artifacts. Only the exported public key was used for verification. The public key file was named `RPM-GPG-KEY-OVS-STALE-UKEY`.
 
-**Publication boundary:** the public key was used in the local repository but has not yet been added to this Git repository or published as a release asset. Consumers must obtain the public key through a separately authenticated distribution channel and verify its full fingerprint before trusting packages. Do not treat the fingerprint alone as a substitute for the public key.
+**Publication boundary:** the exported public key is included at [`keys/RPM-GPG-KEY-OVS-STALE-UKEY`](../keys/RPM-GPG-KEY-OVS-STALE-UKEY). Its full fingerprint is `7F34141A60E9B91DABF3978DFEC22E62BB0AD5CB`. The signed RPMs and local repository have not yet been published as release assets or hosted repository content. Consumers should independently verify the full fingerprint through an authenticated channel before trusting packages. Do not treat the fingerprint alone as a substitute for the public key.
 
 ## RPM signing and verification
 
@@ -85,7 +85,7 @@ This validates local repository metadata authentication, package download, and R
 
 - The signed RPMs and local repository were created on the signing workstation under `~/ovs-ukey-signing/`.
 - The signed RPMs have not yet been uploaded as GitHub Release assets or published through a hosted package repository.
-- The public key has not yet been committed to this repository; its full fingerprint is recorded above.
+- The public key is included at [`keys/RPM-GPG-KEY-OVS-STALE-UKEY`](../keys/RPM-GPG-KEY-OVS-STALE-UKEY); its full fingerprint is recorded above.
 - The older November 2 release assets created with `--nocheck` remain separate unsigned artifacts. The November 3 checked build and the signed local copies do not retroactively change those files.
 - No OVS package installation, upgrade, rollback, service restart, or OpenStack end-to-end test was performed as part of this signing validation.
 - Native EL8 installation/upgrade/rollback testing remains pending in a disposable RHEL 8.10 environment.

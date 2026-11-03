@@ -214,10 +214,12 @@ DNF5 was configured with `gpgcheck=1`, `pkg_gpgcheck=1`, and
   packages: PASS.
 
 This is local repository and download validation, not an installation test.
-The public key was included in the local repository but has not yet been
-committed to this Git repository or published through a release channel.
-The signed RPMs and local repository have not yet been published as GitHub
-Release assets or hosted repository content. The November 2
+The exported public key is included at
+[`keys/RPM-GPG-KEY-OVS-STALE-UKEY`](../keys/RPM-GPG-KEY-OVS-STALE-UKEY),
+with fingerprint `7F34141A60E9B91DABF3978DFEC22E62BB0AD5CB`. Verify the
+fingerprint through an independently authenticated channel before trusting
+packages. The signed RPMs and local repository have not yet been published as
+GitHub Release assets or hosted repository content. The November 2
 `--nocheck` release assets remain separate, unsigned artifacts; this manual
 signing run does not change their provenance.
 
@@ -230,10 +232,10 @@ and upgrade testing remains pending in a disposable RHEL 8.10 environment.
 The full hosted RPM `%check` suite and the separate manual RPM signing/local
 repository verification have now passed. Remaining work is:
 
-1. Publish the exported project public key through an authenticated channel
-   (including its full fingerprint), then publish the signed RPM copies and
-   repository metadata/checksums. The public key and signed package set have
-   not yet been committed or released from this repository.
+1. Publish the signed RPM copies and repository metadata/checksums as a
+   release artifact or hosted repository. The exported public key is included
+   at [`keys/RPM-GPG-KEY-OVS-STALE-UKEY`](../keys/RPM-GPG-KEY-OVS-STALE-UKEY);
+   verify its full fingerprint through an independently authenticated channel.
 2. Complete native EL8 installation, upgrade, service validation, and rollback
    testing in a disposable RHEL 8.10 environment. The local DNF validation
    downloaded and verified signed packages but did not install them.
