@@ -55,10 +55,35 @@ The workflow uploads nine binary RPMs, one source RPM, the build log, and
 `SHA256SUMS` as a GitHub Actions artifact. The artifacts are available from
 the workflow run for 14 days.
 
-The workflow does not sign packages, publish a package repository, install
-OVS, or run the datapath reproduction. The self-hosted runtime reproduction
-workflow remains separate. The Compute1 runner previously encountered
-host-wide OOM pressure and is not used for this hosted package build.
+### Separate RPM `%check` workflow
+
+The repository also has
+`.github/workflows/ovs-rpm-check.yml`, which performs a checked RPM build
+using the same clean source RPM and verified stale-UKEY patch. Unlike the
+portal-dispatch build above, this workflow invokes
+`scripts/build_rpm.sh` with `--with-check`, one build job, and runs on a
+GitHub-hosted Rocky Linux 8.10 container with Docker `--init`.
+
+The November 3, 2026 run completed successfully:
+- [Workflow run 41572770829](https://github.com/abhiwaycoder/ovs-ukey-automation/actions/runs/41572770829).
+- Full `%check` suite: **2,436 passed, 1 skipped**.
+- Targeted test 1305, `Cleanup missing datapath flows`: **PASS**.
+- 9 binary RPMs and 1 source RPM generated.
+- RPM digest verification and evidence artifact upload completed.
+
+Artifact name: `ovs-rpm-check-validation-41572770829`
+(artifact ID `13204797978`). The workflow artifact is retained for 30 days.
+The workflow does not enable kernel datapath tests.
+
+
+The portal-dispatch workflow does not sign packages, publish a package
+repository, install OVS, or run the datapath reproduction. The separate
+`ovs-rpm-check.yml` workflow runs the RPM spec `%check` suite, but it does
+not enable kernel datapath tests. Runtime reproduction remains separate and
+requires a healthy, resource-appropriate self-hosted runner. The Compute1
+runner previously encountered host-wide OOM pressure and must not be
+restarted until host memory pressure and OpenStack workload capacity have
+been addressed.
 
 ## What the script does
 
