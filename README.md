@@ -2,6 +2,23 @@
 
 Automation for reproducing and verifying Open vSwitch stale UKEY cleanup.
 
+
+## Latest validation status — November 3, 2026
+
+The latest RPM validation completed successfully in the Rocky Linux 8.10 build container:
+
+- RPM `%check` completed successfully.
+- **2,436 tests passed and 1 test was skipped.**
+- Targeted test **1305**, `Cleanup missing datapath flows`, passed.
+- The workflow generated 9 binary RPMs and 1 source RPM.
+- Three manual runtime cleanup cycles passed: each began with 2 UKEYs and 2 datapath flows and ended with 0 UKEYs and 0 datapath flows.
+
+The runtime test used the EL8.10-built OVS userspace against the RHEL 9.8 host kernel (`5.14.0-687.30.1.el9_8.x86_64`) inside an isolated container network namespace. It is **not native EL8 kernel validation** and does not independently measure the four-missed-dump threshold.
+
+- [RPM `%check` validation report](evidence/rpm-check-validation-41572770829.md)
+- [Runtime evidence directory](validation/ovs-2.17.8-stale-ukey-runtime-validation/)
+- [RPM build and test workflow](https://github.com/abhiwaycoder/ovs-ukey-automation/actions/runs/41572770829)
+
 ## Reproduction
 
 Run on Compute1:
@@ -94,7 +111,9 @@ The default configuration expects the baseline and patched trees under `/root/ov
 
 ### Scope and Limitations
 
-**Validation status: PASS for regression test 1315.**
+**Historical validation status: PASS for regression test 1315.**
+
+This is the earlier baseline-versus-patched regression record. It is separate from the later RPM `%check` run, which reported targeted test 1305 as passed. These are distinct test records and their IDs should not be treated as interchangeable.
 
 This result demonstrates that the tested regression fails on the baseline and passes with the specified fix. It does not prove that every stale UKEY scenario is resolved, that all datapath cleanup paths are covered, or that the fix has been validated across every supported OVS configuration.
 
@@ -124,6 +143,15 @@ sudoers policy allows that specific entry point:
 
 The entry point delegates to `/usr/local/libexec/ovs-ukey-reproduce`, whose
 paths are specific to Compute1.
+
+A separate manual runtime validation was completed on November 3, 2026 in an
+isolated container network namespace. Three consecutive cycles each showed
+2 UKEYs / 2 datapath flows before datapath-flow deletion and 0 UKEYs / 0 flows
+after revalidation. See
+[the committed runtime evidence](validation/ovs-2.17.8-stale-ukey-runtime-validation/).
+This manual test confirms cleanup in that setup; it does not replace the
+self-hosted workflow's checks of `missed_dumps=1..4` and the
+`revalidate_missing_dp_flow` coverage counter.
 
 **Resource warning:** the Compute1 self-hosted runner previously failed after
 a host-wide OOM event. It is not used for RPM builds or automatic pull-request
@@ -192,18 +220,29 @@ The artifact is retained for 14 days. See
 [evidence/hosted-rpm-build-41386001794.md](evidence/hosted-rpm-build-41386001794.md)
 for the run details and generated package checksums.
 
-This run used `--nocheck`; it did not execute the RPM spec `%check` suite.
-The generated RPMs are unsigned and have not been installed or runtime-tested.
+This November 2 build used `--nocheck`; it did not execute the RPM spec
+`%check` suite. Those original release RPM assets remain no-check artifacts.
+A separate November 3 workflow rebuilt the RPMs with `--with-check` and
+completed the spec test suite successfully; see the
+[RPM `%check` validation report](evidence/rpm-check-validation-41572770829.md).
+The successful later run does not retroactively change the provenance of the
+earlier no-check release assets. The generated RPMs are unsigned.
 
 ### Workflow behavior and limits
 
-The workflow installs BuildRequires from the clean SRPM, applies the vendor
-patch and stale-UKEY patch through the spec, builds with one job and
-`--nocheck`, verifies RPM digests, and uploads the resulting artifacts.
+The portal-dispatch workflow installs BuildRequires from the clean SRPM, applies
+the vendor patch and stale-UKEY patch through the spec, and builds with one
+job using `--nocheck`. It verifies RPM digests and uploads the resulting
+artifacts; this workflow intentionally skips `%check`.
 
-The `%check` stage is skipped. The workflow does not sign RPMs, publish a
-package repository, install OVS, or run the datapath reproduction. Signing,
-deployment, and OpenStack runtime validation remain separate steps.
+The separate `.github/workflows/ovs-rpm-check.yml` workflow runs the build
+with `--with-check`. Its November 3, 2026 run completed successfully with
+2,436 tests passed and 1 skipped, including targeted test 1305. The run
+generated 9 binary RPMs and 1 source RPM. See the
+[RPM `%check` report](evidence/rpm-check-validation-41572770829.md).
+
+Neither workflow signs RPMs, publishes a package repository, installs OVS,
+or performs OpenStack end-to-end validation. Those remain separate steps.
 
 The runtime reproduction workflow is separate and still requires a healthy,
 resource-appropriate self-hosted runner. The OOM-affected Compute1 runner is
@@ -262,9 +301,9 @@ OVS runtime.
 
 ## OVS RPM build and test report
 
-The EL8.10 package build and validation status, including the focused regression result and the unresolved full-suite resource failure, are documented in [docs/BUILD_AND_TEST_RESULTS.md](docs/BUILD_AND_TEST_RESULTS.md).
+The package build history, successful November 3 RPM `%check` run, targeted regression result, and manual runtime evidence are documented in [docs/BUILD_AND_TEST_RESULTS.md](docs/BUILD_AND_TEST_RESULTS.md).
 
-**Package status:** Nine binary RPMs and one source RPM were generated successfully for `2.17.0-106.el8`. The build used `rpmbuild --nocheck`, so the RPM `%check` stage was skipped and is not claimed as passed. All ten RPM files passed `rpm -K` digest verification. SHA-256 values are recorded in [evidence/el8.10-rpm-SHA256SUMS](evidence/el8.10-rpm-SHA256SUMS). The RPMs are unsigned.
+**Current validation status:** The November 3 hosted RPM `%check` run passed with 2,436 tests passed and 1 skipped; targeted test 1305 passed. It generated 9 binary RPMs and 1 source RPM. Three additional manual runtime cycles confirmed UKEY and datapath-flow cleanup in an isolated container network namespace. The original November 2 release RPM assets were built with `--nocheck`; the later successful test run does not change that earlier artifact provenance. RPMs remain unsigned.
 
 ### Repeatable RPM build script
 
