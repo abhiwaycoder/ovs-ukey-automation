@@ -17,6 +17,9 @@ jobs:
 
     container:
       image: quay.io/rockylinux/rockylinux:8.10
+      # OVS tests daemonize processes and poll their PIDs during cleanup.
+      # tini must reap orphaned children so kill -0 stops seeing exited daemons.
+      options: --init
 
     steps:
       - name: Install Git and RPM build tooling
@@ -25,7 +28,38 @@ jobs:
           set -euo pipefail
           dnf -y install \
             dnf-plugins-core rpm-build rpmdevtools cpio \
-            curl ca-certificates git tar gzip make gcc gcc-c++
+            curl ca-certificates git tar gzip make gcc gcc-c++ iproute
+
+      - name: Verify test container runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "========== Container PID 1 =========="
+          ps -p 1 -o pid=,ppid=,stat=,comm=,args=
+
+          echo "========== Required network tools =========="
+          command -v ip
+          command -v tc
+          ip -Version
+          tc -Version
+
+          echo "========== Verify orphan reaping =========="
+          pidfile="$(mktemp)"
+          (
+            sleep 1 &
+            printf '%s\\n' "$!" > "$pidfile"
+          )
+          child_pid="$(cat "$pidfile")"
+          sleep 2
+          if [[ -e "/proc/$child_pid" ]]; then
+            ps -o pid=,ppid=,stat=,comm= -p "$child_pid" || true
+            rm -f "$pidfile"
+            echo "ERROR: orphaned test process was not reaped by PID 1."
+            exit 1
+          fi
+          rm -f "$pidfile"
+          echo "PASS: PID 1 reaped the orphaned child."
 
       - name: Check out repository
         uses: actions/checkout@v4
