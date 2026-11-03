@@ -236,8 +236,7 @@ its `repomd.xml` was signed, and DNF5 metadata and package-download checks
 passed. See the [RPM signing and local repository validation report](evidence/rpm-signing-validation-20261103.md).
 
 The signed copies and local repository have not yet been published as GitHub
-Release assets or through a hosted package repository. The public key used by
-the local repository has not yet been committed to this repository. The
+Release assets or through a hosted package repository. The exported public key is included at [`keys/RPM-GPG-KEY-OVS-STALE-UKEY`](keys/RPM-GPG-KEY-OVS-STALE-UKEY), with fingerprint `7F34141A60E9B91DABF3978DFEC22E62BB0AD5CB`. The
 November 3 signing operation does not retroactively change the provenance of
 the November 2 no-check release assets.
 
@@ -319,7 +318,7 @@ OVS runtime.
 
 The package build history, successful November 3 RPM `%check` run, targeted regression result, and manual runtime evidence are documented in [docs/BUILD_AND_TEST_RESULTS.md](docs/BUILD_AND_TEST_RESULTS.md).
 
-**Current validation status:** The November 3 hosted RPM `%check` run passed with 2,436 tests passed and 1 skipped; targeted test 1305 passed. It generated 9 binary RPMs and 1 source RPM. Three additional manual runtime cycles confirmed UKEY and datapath-flow cleanup in an isolated container network namespace. The original November 2 release RPM assets were built with `--nocheck` and remain unsigned. Separately, signed copies of the November 3 checked-build artifact were created and verified locally, with a signed local DNF repository. Those signed copies and the public key have not yet been published. See [RPM signing validation](evidence/rpm-signing-validation-20261103.md).
+**Current validation status:** The November 3 hosted RPM `%check` run passed with 2,436 tests passed and 1 skipped; targeted test 1305 passed. It generated 9 binary RPMs and 1 source RPM. Three additional manual runtime cycles confirmed UKEY and datapath-flow cleanup in an isolated container network namespace. The original November 2 release RPM assets were built with `--nocheck` and remain unsigned. Separately, signed copies of the November 3 checked-build artifact were created and verified locally, with a signed local DNF repository. The exported public key is included at [`keys/RPM-GPG-KEY-OVS-STALE-UKEY`](keys/RPM-GPG-KEY-OVS-STALE-UKEY); the signed RPM copies and local repository have not yet been published. See [RPM signing validation](evidence/rpm-signing-validation-20261103.md).
 
 ### Repeatable RPM build script
 

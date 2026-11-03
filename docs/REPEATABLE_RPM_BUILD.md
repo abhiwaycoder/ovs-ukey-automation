@@ -203,11 +203,12 @@ authenticated the repository metadata, listed all nine binary packages, and
 `rpmkeys --checksig` checks passed for all nine downloaded RPMs.
 
 **Publication and installation boundary:** this was a local workstation
-repository only. The signed RPMs and public key have not yet been uploaded as
-GitHub Release assets or published through a hosted package repository. The
-public key fingerprint is documented in the signing evidence report, but the
-armored public key itself has not yet been committed here. Obtain the public
-key from an authenticated channel and verify its full fingerprint before
+repository only. The exported public key is included at
+[`keys/RPM-GPG-KEY-OVS-STALE-UKEY`](../keys/RPM-GPG-KEY-OVS-STALE-UKEY).
+Its full fingerprint is `7F34141A60E9B91DABF3978DFEC22E62BB0AD5CB`.
+The signed RPMs and local repository have not yet been uploaded as GitHub
+Release assets or published through a hosted package repository. Verify the
+full fingerprint through an independently authenticated channel before
 trusting packages. No installation, upgrade, rollback, OVS service restart,
 or OpenStack end-to-end transaction was performed in this signing phase.
 These tests remain separate work for a disposable EL8 environment.
