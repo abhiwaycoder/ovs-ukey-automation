@@ -118,6 +118,100 @@ or not exist; the script will not overwrite existing build artifacts.
 sign the packages. Signing and repository publication are separate release
 steps.
 
+
+
+## Manual RPM signing and local repository validation
+
+Package signing is a separate release operation; neither
+`.github/workflows/portal-dispatch.yml` nor
+`.github/workflows/ovs-rpm-check.yml` receives or stores the private signing
+key. Keep the signing key outside GitHub Actions and the build container, on a
+protected signing workstation. Never commit the private key, its passphrase,
+or the GPG home directory.
+
+The November 3, 2026 manual signing run used the checked-build artifact from
+[workflow run 41572770829](https://github.com/abhiwaycoder/ovs-ukey-automation/actions/runs/41572770829),
+artifact `ovs-rpm-check-validation-41572770829` (ID `13204797978`). The
+source artifact contained 9 binary RPMs and 1 source RPM. Its original
+`SHA256SUMS` manifest was verified before signing.
+
+Signing key identity:
+
+- User ID: `OVS Stale UKEY RPM Signing`
+- Algorithm: RSA 4096
+- Fingerprint: `7F34141A60E9B91DABF3978DFEC22E62BB0AD5CB`
+- Created: November 3, 2026; expires November 2, 2028.
+- RPM signature format observed: OpenPGP V4 RSA/SHA512.
+
+The RPM 6 signing configuration selected GnuPG and the full fingerprint.
+For an RPM 6 signing workstation, the relevant user macro configuration is:
+
+```text
+%_openpgp_sign gpg
+%_openpgp_sign_id <FULL_OPENPGP_FINGERPRINT>
+%_gpg_path <PROTECTED_GNUPG_HOME>
+```
+
+Sign copies of the original RPMs (do not overwrite the downloaded unsigned
+inputs) with:
+
+```bash
+rpmsign --addsign --key-id "<FULL_OPENPGP_FINGERPRINT>" package.rpm
+```
+
+Verify signatures and both package digests against an RPM database into which
+the expected public key has been imported:
+
+```bash
+rpmkeys --dbpath /path/to/isolated-rpmdb --import RPM-GPG-KEY-OVS-STALE-UKEY
+rpmkeys --dbpath /path/to/isolated-rpmdb --checksig --verbose package.rpm
+```
+
+For the November 3 signed set, all 9 binary RPMs and the 1 source RPM passed
+signature, header SHA-256, and payload SHA-256 verification. The signed
+package checksums are recorded in
+[evidence/rpm-signing-validation-20261103.md](../evidence/rpm-signing-validation-20261103.md).
+The original unsigned input RPM manifest was also rechecked and remained
+unchanged.
+
+### Local signed DNF repository
+
+The nine signed binary RPMs were copied to a separate local repository; the
+signed source RPM was retained separately. Metadata was generated with:
+
+```bash
+createrepo_c --checksum sha256 /path/to/local-repo
+```
+
+The generated `repodata/repomd.xml` was signed with a detached ASCII-armored
+OpenPGP signature:
+
+```bash
+gpg --armor --local-user "<FULL_OPENPGP_FINGERPRINT>" \
+  --detach-sign \
+  --output /path/to/local-repo/repodata/repomd.xml.asc \
+  /path/to/local-repo/repodata/repomd.xml
+gpg --verify \
+  /path/to/local-repo/repodata/repomd.xml.asc \
+  /path/to/local-repo/repodata/repomd.xml
+```
+
+A local DNF5 repository was then tested with `gpgcheck=1`,
+`pkg_gpgcheck=1`, and `repo_gpgcheck=1`. DNF5 `makecache --refresh`
+authenticated the repository metadata, listed all nine binary packages, and
+`reposync --gpgcheck` downloaded all nine packages. Independent
+`rpmkeys --checksig` checks passed for all nine downloaded RPMs.
+
+**Publication and installation boundary:** this was a local workstation
+repository only. The signed RPMs and public key have not yet been uploaded as
+GitHub Release assets or published through a hosted package repository. The
+public key fingerprint is documented in the signing evidence report, but the
+armored public key itself has not yet been committed here. Obtain the public
+key from an authenticated channel and verify its full fingerprint before
+trusting packages. No installation, upgrade, rollback, OVS service restart,
+or OpenStack end-to-end transaction was performed in this signing phase.
+These tests remain separate work for a disposable EL8 environment.
+
 ## Safety and validation
 
 - Run only with trusted source RPMs and patches, inside an isolated build
