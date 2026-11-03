@@ -36,13 +36,85 @@ After installing the OpenSSL executable in the test container, these previously 
 | 2327 | `bootstrap ca cert` | PASS |
 | 2328 | `peer ca cert` | PASS |
 
-## Full test suite status
+## Historical local full-suite attempt (October 30, 2026)
 
-A serial full-suite run (`make check TESTSUITEFLAGS="-j1"`) executed 2,434 tests, with 3 skipped and 4 unexpected failures at that time. Three of those failures were the certificate-related tests listed above and passed when rerun after OpenSSL was installed.
+A serial full-suite run (`make check TESTSUITEFLAGS="-j1"`) executed 2,434
+tests, with 3 skipped and 4 unexpected failures at that time. Three of those
+failures were certificate-related tests (2281, 2327, and 2328); they passed
+on isolated rerun after installing the OpenSSL executable in the test
+container.
 
-The remaining failure was test 1996, `monitor-cond-change with many sessions pending` (`tests/ovsdb-monitor.at:594`). Its isolated rerun also failed. Host kernel OOM records from the test period show global memory pressure and OOM-killer activity, including termination of an `ovsdb-server` process. This stress-test failure is therefore recorded as **resource-constrained / unresolved**, not as a passing test and not as evidence of a stale-UKEY patch regression.
+The remaining failure was test 1996, `monitor-cond-change with many sessions
+pending` (`tests/ovsdb-monitor.at:594`). Its isolated rerun also failed.
+Host kernel OOM records from that period showed global memory pressure and
+OOM-killer activity, including termination of an `ovsdb-server` process.
+This was recorded as a resource-constrained unresolved failure in that
+initial local attempt. This historical result is superseded for the current
+RPM validation status by the later complete hosted `%check` run below; it is
+retained here as a record of the earlier troubleshooting.
 
-The complete suite has **not** been rerun after the OpenSSL installation. Consequently, this report does not claim a clean full-suite result or a successful RPM `%check` stage.
+## Latest hosted RPM `%check` result (November 3, 2026)
+
+The separate **OVS RPM Build with Tests** workflow rebuilt the package from
+the clean EL8S source RPM and the verified stale-UKEY patch in a Rocky Linux
+8.10 container. The workflow ran `scripts/build_rpm.sh` with
+`--with-check` and one build job.
+
+- Workflow run: [41572770829 — OVS RPM Build with Tests](https://github.com/abhiwaycoder/ovs-ukey-automation/actions/runs/41572770829)
+- Workflow run number: 7
+- Job: `rpm-check`
+- Result: **success**; all workflow steps completed successfully.
+- Full suite: **2,436 passed, 1 skipped**.
+- Targeted test: **1305 — Cleanup missing datapath flows — PASS**.
+- RPM outputs: 9 binary RPMs and 1 source RPM.
+- RPM digest verification and artifact upload completed.
+
+The run's artifact is `ovs-rpm-check-validation-41572770829`
+(artifact ID `13204797978`). The workflow uses GitHub-hosted infrastructure,
+a Rocky Linux 8.10 container with Docker `--init`, and a serial RPM build.
+Its job summary explicitly records that kernel datapath tests were not
+enabled; this is userspace RPM `%check` validation.
+
+**Test ID distinction:** test 1305 is the targeted test reported by this
+November 3 RPM `%check` run. Test 1315 in the separate
+[historical baseline-versus-patched validation report](OVS-STALE-UKEY-VALIDATION.md)
+is a distinct earlier test record. Do not substitute one ID for the other.
+
+The November 3 checked build is separate from the November 2 RPM release
+assets produced with `--nocheck`. It proves that a later build of the same
+package version completed `%check`; it does not retroactively change the
+provenance of previously published no-check RPM assets.
+
+## Manual runtime validation (November 3, 2026)
+
+Three consecutive manual runtime cleanup cycles passed using
+`openvswitch2.17-2.17.0-106.el8.x86_64`.
+
+| Runtime check | Each cycle |
+|---|---:|
+| UKEYs before datapath-flow deletion | 2 |
+| Datapath flows before deletion | 2 |
+| UKEYs after revalidation | 0 |
+| Datapath flows after cleanup | 0 |
+| Expected `flow_del` ENOENT warnings | 2 |
+
+Environment:
+- OVS userspace package built for EL8.10 in Rocky Linux 8.10.
+- Runtime host kernel: RHEL 9.8,
+  `5.14.0-687.30.1.el9_8.x86_64`.
+- Isolated container network namespace with a private OVS system datapath,
+  two peer network namespaces, and veth connectivity.
+
+Evidence, per-cycle snapshots and logs, the summary, and SHA-256 manifests
+are committed under
+[validation/ovs-2.17.8-stale-ukey-runtime-validation/](../validation/ovs-2.17.8-stale-ukey-runtime-validation/).
+
+**Scope limitation:** this demonstrates cleanup with EL8.10-built OVS
+userspace against a RHEL 9.8 host kernel. It is not native EL8 kernel
+validation. The manual runtime test confirms cleanup to zero but does not
+independently instrument or measure the four-consecutive-missed-dump
+threshold. The automated self-hosted runtime reproduction remains a
+separate validation task.
 
 ## RPM build result
 
@@ -92,9 +164,25 @@ d3da63cb67e7b69444ccc385fc1df076d1558bb8103f1e3014db620aaf257e19  openvswitch2.1
 
 A copy of the checksum list is maintained in [evidence/el8.10-rpm-SHA256SUMS](../evidence/el8.10-rpm-SHA256SUMS).
 
-## Recommended next validation
+## Remaining validation and release work
 
-Repeat the complete serial `%check` on a host with sufficient available memory and low competing workload. Then perform a full RPM build with checks enabled and record the final suite summary. Until that is done, distribute this package only with the explicit `--nocheck` qualification.
+The full hosted RPM `%check` suite has now passed. Remaining work is:
+
+1. Restore the isolated self-hosted runtime runner after verifying host memory
+   headroom and OpenStack workload safety, then run
+   `.github/workflows/runtime-reproduction.yml` and capture the
+   `missed_dumps=1..4` and `revalidate_missing_dp_flow` evidence.
+2. Perform runtime validation on the intended native EL8 kernel environment
+   where required; the current manual datapath run used a RHEL 9.8 host kernel.
+3. Sign the RPMs, publish them through a package repository, and validate
+   installation, upgrade, restart, and rollback behavior in a disposable
+   environment.
+4. Complete OpenStack integration and end-to-end network validation.
+
+The November 2 release assets remain `--nocheck` artifacts. Do not describe
+those particular files as having passed `%check`; use the separate
+November 3 checked-build artifact when referring to the successful
+`%check` run.
 
 ## Integrity
 
