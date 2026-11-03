@@ -1,0 +1,62 @@
+UKEYS_AFTER=0
+FLOWS_AFTER=0
+system@ovs-system:
+  flows         : (current 0) (avg 0) (max 12) (limit 12000)
+  dump duration : 1ms
+  ufid enabled : true
+
+  18: (keys 0)
+  17: (keys 0)
+Event coverage, avg rate over last: 5 seconds, last minute, last hour,  hash=ce412d13:
+bridge_reconfigure         0.0/sec     0.000/sec        0.0092/sec   total: 33
+ofproto_flush              0.0/sec     0.000/sec        0.0006/sec   total: 2
+ofproto_recv_openflow      0.0/sec     0.000/sec        0.0011/sec   total: 4
+ofproto_update_port        0.0/sec     0.000/sec        0.0050/sec   total: 18
+rev_reconfigure            0.0/sec     0.000/sec        0.0006/sec   total: 2
+rev_port_toggled           0.0/sec     0.000/sec        0.0022/sec   total: 8
+rev_flow_table             0.0/sec     0.000/sec        0.0006/sec   total: 2
+rev_mac_learning           0.0/sec     0.000/sec        0.0014/sec   total: 5
+handler_duplicate_upcall   0.0/sec     0.000/sec        0.0003/sec   total: 1
+revalidate_missing_dp_flow   0.0/sec     0.033/sec        0.0011/sec   total: 5
+xlate_actions              0.4/sec     0.150/sec        0.0294/sec   total: 106
+cmap_expand                0.0/sec     0.000/sec        0.0778/sec   total: 280
+cmap_shrink                0.0/sec     0.000/sec        0.0739/sec   total: 266
+dpif_destroy               0.0/sec     0.000/sec        0.0003/sec   total: 1
+dpif_port_add              0.0/sec     0.000/sec        0.0011/sec   total: 4
+dpif_port_del              0.0/sec     0.000/sec        0.0003/sec   total: 1
+dpif_flow_flush            0.0/sec     0.017/sec        0.0014/sec   total: 6
+dpif_flow_get              0.0/sec     0.000/sec        0.0139/sec   total: 50
+dpif_flow_put              0.0/sec     0.083/sec        0.0319/sec   total: 115
+dpif_flow_del              0.0/sec     0.050/sec        0.0303/sec   total: 110
+dpif_execute               0.0/sec     0.083/sec        0.0186/sec   total: 67
+flow_extract               0.0/sec     0.083/sec        0.0194/sec   total: 70
+miniflow_malloc            0.0/sec     0.000/sec        0.1358/sec   total: 489
+hmap_pathological          0.0/sec     0.000/sec        0.0028/sec   total: 10
+hmap_expand               16.8/sec    19.200/sec        4.2875/sec   total: 15662
+mac_learning_learned       0.0/sec     0.000/sec        0.0014/sec   total: 5
+mac_learning_expired       0.0/sec     0.000/sec        0.0003/sec   total: 1
+netdev_get_stats           0.6/sec     0.600/sec        0.1361/sec   total: 493
+txn_unchanged              0.0/sec     0.133/sec        0.0547/sec   total: 197
+txn_incomplete             0.2/sec     0.067/sec        0.0192/sec   total: 70
+txn_success                0.2/sec     0.067/sec        0.0144/sec   total: 53
+poll_create_node          99.2/sec   117.483/sec       25.7372/sec   total: 93819
+poll_zero_timeout          0.0/sec     0.083/sec        0.0300/sec   total: 108
+rconn_queued               0.0/sec     0.000/sec        0.0011/sec   total: 4
+rconn_sent                 0.0/sec     0.000/sec        0.0011/sec   total: 4
+seq_change               1044.4/sec  1035.350/sec      255.9631/sec   total: 926187
+pstream_open               0.0/sec     0.000/sec        0.0031/sec   total: 11
+stream_open                0.0/sec     0.000/sec        0.0003/sec   total: 1
+unixctl_received           0.0/sec     0.300/sec        0.0233/sec   total: 93
+unixctl_replied            0.0/sec     0.300/sec        0.0233/sec   total: 93
+util_xalloc              275.2/sec   258.783/sec       62.6186/sec   total: 228193
+vconn_received             0.0/sec     0.000/sec        0.0019/sec   total: 7
+vconn_sent                 0.0/sec     0.000/sec        0.0019/sec   total: 7
+netdev_set_policing        0.0/sec     0.000/sec        0.0039/sec   total: 14
+netdev_set_hwaddr          0.0/sec     0.000/sec        0.0006/sec   total: 2
+netdev_get_ethtool         0.0/sec     0.000/sec        0.0033/sec   total: 12
+netdev_set_ethtool         0.0/sec     0.000/sec        0.0006/sec   total: 2
+netlink_received          11.0/sec    11.433/sec        2.9597/sec   total: 10749
+netlink_recv_jumbo         0.4/sec     0.400/sec        0.2058/sec   total: 743
+netlink_sent               7.0/sec     8.233/sec        2.2478/sec   total: 8156
+nln_changed                0.0/sec     0.000/sec        0.0211/sec   total: 76
+103 events never hit
