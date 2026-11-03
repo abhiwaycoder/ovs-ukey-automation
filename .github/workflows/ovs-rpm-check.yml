@@ -62,7 +62,7 @@ jobs:
               os._exit(0)
 
           with open(sys.argv[1], "w", encoding="ascii") as pid_file:
-              pid_file.write(f"{child_pid}\\n")
+              pid_file.write(str(child_pid) + chr(10))
           os._exit(0)
           PY
           child_pid="$(cat "$pidfile")"
