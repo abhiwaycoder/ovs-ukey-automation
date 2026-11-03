@@ -233,8 +233,7 @@ checksums, and signed all 9 binary RPMs plus the 1 source RPM with a
 project-specific OpenPGP key. All ten package signatures and payload/header
 digests passed independent verification. A local repository was generated,
 its `repomd.xml` was signed, and DNF5 metadata and package-download checks
-passed. See the [RPM signing and local repository validation report]
-(evidence/rpm-signing-validation-20261103.md).
+passed. See the [RPM signing and local repository validation report](evidence/rpm-signing-validation-20261103.md).
 
 The signed copies and local repository have not yet been published as GitHub
 Release assets or through a hosted package repository. The public key used by
@@ -259,8 +258,7 @@ Neither GitHub Actions build workflow signs RPMs, publishes a package
 repository, installs OVS, or performs OpenStack end-to-end validation. Manual
 signing and local DNF repository validation were completed separately on
 November 3, 2026; publication and EL8 installation/upgrade/rollback testing
-remain pending. See the [signing validation report]
-(evidence/rpm-signing-validation-20261103.md).
+remain pending. See the [signing validation report](evidence/rpm-signing-validation-20261103.md).
 
 The runtime reproduction workflow is separate and still requires a healthy,
 resource-appropriate self-hosted runner. The OOM-affected Compute1 runner is
