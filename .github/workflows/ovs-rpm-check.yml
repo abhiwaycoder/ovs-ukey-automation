@@ -48,7 +48,7 @@ jobs:
           pidfile="$(mktemp)"
           (
             sleep 1 &
-            printf '%s\\n' "$!" > "$pidfile"
+            printf '%s\n' "$!" > "$pidfile"
           )
           child_pid="$(cat "$pidfile")"
           sleep 2
