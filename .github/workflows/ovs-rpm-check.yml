@@ -32,7 +32,7 @@ jobs:
           set -euo pipefail
           dnf -y install \
             dnf-plugins-core rpm-build rpmdevtools cpio \
-            curl ca-certificates git tar gzip make gcc gcc-c++ iproute procps-ng
+            curl ca-certificates git tar gzip make gcc gcc-c++ iproute iproute-tc procps-ng python3
 
       - name: Verify test container runtime
         shell: bash
@@ -50,10 +50,21 @@ jobs:
 
           echo "========== Verify orphan reaping =========="
           pidfile="$(mktemp)"
-          (
-            sleep 1 &
-            printf '%s\n' "$!" > "$pidfile"
-          )
+          python3 - "$pidfile" <<'PY'
+          import os
+          import sys
+          import time
+
+          child_pid = os.fork()
+          if child_pid == 0:
+              # Outlive the parent so PID 1 must adopt and reap this process.
+              time.sleep(1)
+              os._exit(0)
+
+          with open(sys.argv[1], "w", encoding="ascii") as pid_file:
+              pid_file.write(f"{child_pid}\\n")
+          os._exit(0)
+          PY
           child_pid="$(cat "$pidfile")"
           sleep 2
           if [[ -e "/proc/$child_pid" ]]; then
