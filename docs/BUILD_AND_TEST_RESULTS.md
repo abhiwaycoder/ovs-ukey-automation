@@ -164,19 +164,83 @@ d3da63cb67e7b69444ccc385fc1df076d1558bb8103f1e3014db620aaf257e19  openvswitch2.1
 
 A copy of the checksum list is maintained in [evidence/el8.10-rpm-SHA256SUMS](../evidence/el8.10-rpm-SHA256SUMS).
 
+## Manual RPM signing and local repository validation (November 3, 2026)
+
+The November 3 checked-build artifact was separately signed on a protected
+workstation after download and verification of its original `SHA256SUMS`
+manifest.
+
+Source artifact:
+- [Workflow run 41572770829](https://github.com/abhiwaycoder/ovs-ukey-automation/actions/runs/41572770829), run number 7.
+- Artifact: `ovs-rpm-check-validation-41572770829`, ID `13204797978`.
+- Build commit: `83a4095f614adac7d9eaa1ff847151695515bfa2`.
+- Artifact archive digest: `sha256:c2d50eca085363376cf94ced4f10ec625c057b194959511223ddc0eae6cc074a`.
+- Contents: 9 binary RPMs and 1 source RPM.
+- Original artifact SHA-256 manifest: all ten entries passed before signing.
+
+Signing key:
+- User ID: `OVS Stale UKEY RPM Signing`.
+- RSA 4096; created November 3, 2026; expires November 2, 2028.
+- Full fingerprint: `7F34141A60E9B91DABF3978DFEC22E62BB0AD5CB`.
+- RPM signature observed: OpenPGP V4 RSA/SHA512.
+
+All 9 binary RPMs and the 1 source RPM were signed into a separate output
+directory, leaving the original downloaded RPMs unchanged. Each signed
+package passed verification against an isolated RPM database containing the
+project public key:
+- Header OpenPGP signature: 10/10 PASS.
+- Header SHA-256 digest: 10/10 PASS.
+- Payload SHA-256 digest: 10/10 PASS.
+- Original, pre-signing SHA-256 manifest: 10/10 PASS after signing.
+
+The signed package SHA-256 checksums are recorded in
+[evidence/rpm-signing-validation-20261103.md](../evidence/rpm-signing-validation-20261103.md).
+
+### Local DNF repository test
+
+A local binary repository was assembled from the nine signed binary RPMs.
+The source RPM remained separately available in the signed output. Repository
+metadata was generated with `createrepo_c --checksum sha256`; a detached
+ASCII-armored signature was generated for `repodata/repomd.xml` and GPG
+reported a good signature from the project key.
+
+The local repository SHA-256 manifest covered 15 files and all entries passed.
+DNF5 was configured with `gpgcheck=1`, `pkg_gpgcheck=1`, and
+`repo_gpgcheck=1`:
+- `makecache --refresh`: PASS; repository metadata authenticated.
+- `list --available`: all 9 binary packages listed.
+- `reposync --gpgcheck`: all 9 packages downloaded.
+- Independent RPM signature and digest verification of the 9 downloaded
+  packages: PASS.
+
+This is local repository and download validation, not an installation test.
+The public key was included in the local repository but has not yet been
+committed to this Git repository or published through a release channel.
+The signed RPMs and local repository have not yet been published as GitHub
+Release assets or hosted repository content. The November 2
+`--nocheck` release assets remain separate, unsigned artifacts; this manual
+signing run does not change their provenance.
+
+No package installation, upgrade, rollback, OVS service restart, or OpenStack
+end-to-end validation was performed in this phase. Native EL8 installation
+and upgrade testing remains pending in a disposable RHEL 8.10 environment.
+
 ## Remaining validation and release work
 
-The full hosted RPM `%check` suite has now passed. Remaining work is:
+The full hosted RPM `%check` suite and the separate manual RPM signing/local
+repository verification have now passed. Remaining work is:
 
-1. Restore the isolated self-hosted runtime runner after verifying host memory
-   headroom and OpenStack workload safety, then run
+1. Publish the exported project public key through an authenticated channel
+   (including its full fingerprint), then publish the signed RPM copies and
+   repository metadata/checksums. The public key and signed package set have
+   not yet been committed or released from this repository.
+2. Complete native EL8 installation, upgrade, service validation, and rollback
+   testing in a disposable RHEL 8.10 environment. The local DNF validation
+   downloaded and verified signed packages but did not install them.
+3. Restore the isolated self-hosted runtime runner only after verifying host
+   memory headroom and OpenStack workload safety, then run
    `.github/workflows/runtime-reproduction.yml` and capture the
    `missed_dumps=1..4` and `revalidate_missing_dp_flow` evidence.
-2. Perform runtime validation on the intended native EL8 kernel environment
-   where required; the current manual datapath run used a RHEL 9.8 host kernel.
-3. Sign the RPMs, publish them through a package repository, and validate
-   installation, upgrade, restart, and rollback behavior in a disposable
-   environment.
 4. Complete OpenStack integration and end-to-end network validation.
 
 The November 2 release assets remain `--nocheck` artifacts. Do not describe
