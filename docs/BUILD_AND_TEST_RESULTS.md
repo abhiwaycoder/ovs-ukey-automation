@@ -224,8 +224,11 @@ GitHub Release assets or hosted repository content. The November 2
 signing run does not change their provenance.
 
 No package installation, upgrade, rollback, OVS service restart, or OpenStack
-end-to-end validation was performed in this phase. Native EL8 installation
-and upgrade testing remains pending in a disposable RHEL 8.10 environment.
+end-to-end validation was performed in the November 3 signing phase. A
+subsequent separate native RHEL 8.10 test completed a same-NEVRA signed-package
+replacement, explicit OVS service restart, and runtime UKEY cleanup check.
+A different-NEVRA upgrade and rollback remain pending; see the
+[native EL8 runtime validation report](../validation/ovs-2.17.8-rhel8-native-runtime-validation/README.md).
 
 ## Remaining validation and release work
 
@@ -236,9 +239,10 @@ repository verification have now passed. Remaining work is:
    release artifact or hosted repository. The exported public key is included
    at [`keys/RPM-GPG-KEY-OVS-STALE-UKEY`](../keys/RPM-GPG-KEY-OVS-STALE-UKEY);
    verify its full fingerprint through an independently authenticated channel.
-2. Complete native EL8 installation, upgrade, service validation, and rollback
-   testing in a disposable RHEL 8.10 environment. The local DNF validation
-   downloaded and verified signed packages but did not install them.
+2. Complete a different-NEVRA native EL8 upgrade and rollback test.
+   The same-NEVRA signed-package replacement, service restart, and runtime
+   cleanup check have been completed on the disposable RHEL 8.10 VM; see
+   the native EL8 runtime validation report.
 3. Restore the isolated self-hosted runtime runner only after verifying host
    memory headroom and OpenStack workload safety, then run
    `.github/workflows/runtime-reproduction.yml` and capture the
