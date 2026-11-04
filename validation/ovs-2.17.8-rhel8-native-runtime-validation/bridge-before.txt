@@ -1,0 +1,11 @@
+2bd595bb-c160-412b-bbc3-969c576603e4
+    Bridge br-ukey-runtime
+        fail_mode: standalone
+        Port ukey-veth-a
+            Interface ukey-veth-a
+        Port br-ukey-runtime
+            Interface br-ukey-runtime
+                type: internal
+        Port ukey-veth-b
+            Interface ukey-veth-b
+    ovs_version: "2.17.8"

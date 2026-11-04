@@ -1,0 +1,6 @@
+system@ovs-system:
+  flows         : (current 0) (avg 0) (max 4) (limit 10000)
+  dump duration : 1ms
+  ufid enabled : true
+
+  4: (keys 0)

@@ -211,7 +211,10 @@ Release assets or published through a hosted package repository. Verify the
 full fingerprint through an independently authenticated channel before
 trusting packages. No installation, upgrade, rollback, OVS service restart,
 or OpenStack end-to-end transaction was performed in this signing phase.
-These tests remain separate work for a disposable EL8 environment.
+A subsequent native RHEL 8.10 test completed a same-NEVRA signed-package
+replacement and runtime cleanup check. A different-NEVRA upgrade and rollback
+remain pending. See the
+[native EL8 runtime validation report](../validation/ovs-2.17.8-rhel8-native-runtime-validation/README.md).
 
 ## Safety and validation
 

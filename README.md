@@ -330,3 +330,25 @@ The script defaults to one build job and skips `%check`; add `--with-check` to r
 ### Build script validation evidence
 
 The repository build script has been executed successfully in the Rocky Linux 8.10 container. It generated nine binary RPMs and one source RPM; all ten passed `rpm -K` digest checks. The run used the default `--nocheck` mode, so it does not establish a passing `%check` suite. See [the script validation report](evidence/repeatable-rpm-build-validation.md).
+
+## Native RHEL 8.10 runtime validation — November 4, 2026
+
+A separate native RHEL 8.10 test was completed using the signed
+`openvswitch2.17-2.17.0-106.el8.x86_64` package on a disposable VM.
+
+The same-NEVRA signed-package replacement and subsequent service activation
+passed. Runtime traffic created two datapath flows and two UKEYs. After
+deleting the datapath flows, the UKEY count reached zero on the fifth
+approximately 0.5-second sample. The final coverage output reported
+`revalidate_missing_dp_flow total: 2`.
+
+The test preserved the existing OVS database ownership and test bridge,
+and all three OVS services remained active.
+
+This result does not independently establish the exact
+`missed_dumps=1..4` sequence. Package scriptlets were skipped during the
+controlled same-NEVRA replacement; a different-NEVRA upgrade, rollback,
+and OpenStack end-to-end validation remain pending.
+
+See the [native RHEL 8.10 runtime validation report](validation/ovs-2.17.8-rhel8-native-runtime-validation/README.md)
+and its accompanying raw evidence and SHA-256 manifest.
