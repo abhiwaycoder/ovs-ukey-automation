@@ -307,4 +307,3 @@ Only run this on a disposable test system. Never point it at production OVS sock
 
 ---
 
-**In one sentence:** this project takes a tested Open vSwitch stale-UKEY fix, turns it into repeatable RPM build and test workflows, and is working toward a safely signed, installable package that is validated on native RHEL and OpenStack.
