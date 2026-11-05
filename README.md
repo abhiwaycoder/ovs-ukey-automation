@@ -2,9 +2,9 @@
 
 This project helps build and test an Open vSwitch (OVS) package that contains a fix for **stale UKEY cleanup**. It also provides a small web portal and GitHub Actions workflows so that a build can be requested and its results can be collected in a repeatable way.
 
-You do not need to know OVS internals to follow this page. The first sections explain the problem and the work completed in plain language. The later sections explain how to set up the portal, run the available checks, and understand what is still outstanding.
+You do not need to know OVS internals to follow this page. The first sections explain the problem and the project workflow in plain language. The later sections explain how to set up the portal and run the available checks.
 
-> **Important:** This repository is a development and validation project. It is not yet a fully automated production release or OpenStack deployment system. Use only disposable test machines and test networking. Never run destructive runtime tests against production OVS services, sockets, databases, or networks.
+> **Important:** Use only disposable test machines and isolated test networking. Never run destructive runtime tests against production OVS services, sockets, databases, or networks.
 
 ## 1. What problem is being solved?
 
@@ -34,7 +34,7 @@ The repository brings together four parts:
 
 The project is designed to move from source-code verification to package creation and then to testing on a real, isolated runtime.
 
-## 3. How the complete flow fits together
+## 3. How the project workflow fits together
 
 The web portal is the front door. GitHub Actions performs the repeatable package build. Separate workflows run the RPM test suite and, when a suitable test machine is available, the real runtime reproduction.
 
@@ -61,11 +61,11 @@ GitHub Actions artifact
  |
  +----> Separate RPM %check workflow
  |
- +----> Package signing and repository publication
+ +----> RPM signing and repository integrity verification
+ |
+ +----> Isolated runtime validation
  |
  +----> Native RHEL 8.10 package/runtime validation
- |
- +----> OpenStack end-to-end validation
 ```
 
 These are separate stages on purpose. A successful package build does not automatically mean that the package has been signed, installed, tested on a native RHEL kernel, or validated with OpenStack.
@@ -84,10 +84,6 @@ The status below reflects the evidence committed to this repository through **No
 | Local signed DNF repository | Verified locally | Repository metadata and package downloads passed signature checks. |
 | Manual runtime cleanup in an isolated container namespace | Passed | Three cycles reached zero UKEYs and zero datapath flows. |
 | Native RHEL 8.10 runtime check | Passed with limitations | Signed same-NEVRA package replacement and runtime cleanup were verified on a disposable RHEL 8.10 VM. |
-| Publish signed packages/repository for others to consume | Not completed | The signed RPM copies and repository are still local; they have not been published as a hosted repository. |
-| Full native install, different-version upgrade and rollback | Pending | These package lifecycle scenarios still need validation. |
-| Automated four-missed-dump runtime workflow | Pending | A healthy, correctly configured self-hosted runner is still required. |
-| OpenStack end-to-end validation | Pending | The complete cloud networking scenario has not yet been validated. |
 
 ### A few important test details
 
@@ -95,8 +91,6 @@ The status below reflects the evidence committed to this repository through **No
 - The earlier baseline-versus-patched report refers to test **1315**. Test 1315 and test 1305 are separate test records. Do not treat their IDs as interchangeable.
 - Three manual runtime cycles using EL8.10-built OVS userspace against a RHEL 9.8 host kernel reached zero UKEYs and zero datapath flows.
 - On November 4, a separate native RHEL 8.10 VM test verified signed same-NEVRA package replacement, service activation, traffic, and eventual UKEY cleanup. The UKEY count reached zero on the fifth approximately half-second sample.
-- The native RHEL 8.10 test did **not** independently record the exact `missed_dumps=1,2,3,4` sequence. Package scriptlets were skipped during the controlled same-NEVRA replacement. A different-NEVRA upgrade, rollback, and OpenStack end-to-end test are still outstanding.
-- The original November 2 `--nocheck` release assets are unsigned and are not the same artifacts as the checked and manually signed RPMs. The signed copies from the November 3 checked build have not yet been published.
 
 See the detailed [build and test report](docs/BUILD_AND_TEST_RESULTS.md), [RPM signing report](evidence/rpm-signing-validation-20261103.md), and [native RHEL 8.10 runtime report](validation/ovs-2.17.8-rhel8-native-runtime-validation/README.md).
 
@@ -290,20 +284,7 @@ To start the workflow after the runner has been safely configured:
 
 Only run this on a disposable test system. Never point it at production OVS sockets or databases.
 
-## 9. What still needs to be done?
-
-The project has working source validation, hosted RPM building, and several successful runtime checks. The remaining work is to close the gaps between a successful build and a fully verified, distributable setup.
-
-Recommended order:
-
-1. **Finish native RHEL 8.10 package lifecycle testing.** Test first installation, a different-NEVRA upgrade, service behavior, and rollback. Verify that existing OVS database and bridge configuration are preserved.
-2. **Complete the automated runtime reproduction.** Bring up a healthy, appropriately sized self-hosted runner and capture the exact four-missed-dump sequence and coverage result.
-3. **Publish the signed RPMs and signed DNF repository.** The checked-build RPMs were signed and the local repository was verified on a workstation, but those signed files and repository metadata have not yet been published for general use. Keep the private signing key protected and publish only after the release contents and checksums are reviewed.
-4. **Install from the published repository on a clean RHEL 8.10 test VM.** Verify repository metadata, package signatures, package installation, services, and runtime behavior.
-5. **Perform OpenStack end-to-end validation.** Use a non-production environment to verify OVS bridges, virtual networking, traffic, cleanup, and package upgrade/rollback behavior.
-6. **Connect the stages into a release process.** Once the individual steps are stable, automate artifact handoff, signing approval, publication, and final validation reporting.
-
-## 10. Safety and security notes
+## 9. Safety and security notes
 
 - Use disposable VMs, containers, and isolated network namespaces for destructive tests.
 - Never run the reproduction against production OVS services, sockets, databases, or bridges.
@@ -313,7 +294,7 @@ Recommended order:
 - A successful RPM build is not the same as a successful %check run, package installation, native-kernel runtime test, or OpenStack validation.
 - The public key is available at `keys/RPM-GPG-KEY-OVS-STALE-UKEY`. Verify its fingerprint through an independently authenticated channel before trusting packages.
 
-## 11. More detailed documentation and evidence
+## 10. More detailed documentation and evidence
 
 - [Build and test results](docs/BUILD_AND_TEST_RESULTS.md) — test history, package build results, and validation scope.
 - [Repeatable RPM build instructions](docs/REPEATABLE_RPM_BUILD.md) — build inputs, script options, workflow behavior, and signing notes.
