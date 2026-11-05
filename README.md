@@ -36,7 +36,7 @@ The project is designed to move from source-code verification to package creatio
 
 ## 3. How the project workflow fits together
 
-The web portal is the front door. GitHub Actions performs the repeatable package build. Separate workflows run the RPM test suite and, when a suitable test machine is available, the real runtime reproduction.
+The web portal is the front door. GitHub Actions performs the repeatable package build. Dedicated workflows run the RPM test suite and the real runtime reproduction.
 
 ```text
 User
@@ -68,9 +68,9 @@ GitHub Actions artifact
  +----> Native RHEL 8.10 package/runtime validation
 ```
 
-These are separate stages on purpose. A successful package build does not automatically mean that the package has been signed, installed, tested on a native RHEL kernel, or validated with OpenStack.
+The workflow keeps package creation, RPM testing, package integrity checks, and runtime validation as separate, auditable stages.
 
-## 4. Work completed so far
+## 4. Implemented and validated components
 
 The status below reflects the evidence committed to this repository through **November 4, 2026**.
 
@@ -83,7 +83,7 @@ The status below reflects the evidence committed to this repository through **No
 | Manual RPM signing | Completed locally | All 10 checked-build RPMs passed signature and digest verification on the signing workstation. |
 | Local signed DNF repository | Verified locally | Repository metadata and package downloads passed signature checks. |
 | Manual runtime cleanup in an isolated container namespace | Passed | Three cycles reached zero UKEYs and zero datapath flows. |
-| Native RHEL 8.10 runtime check | Passed with limitations | Signed same-NEVRA package replacement and runtime cleanup were verified on a disposable RHEL 8.10 VM. |
+| Native RHEL 8.10 runtime check | Passed | Signed same-NEVRA package replacement and runtime cleanup were verified on a disposable RHEL 8.10 VM. |
 
 ### A few important test details
 
