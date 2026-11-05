@@ -6,7 +6,7 @@ You do not need to know OVS internals to follow this page. The first sections ex
 
 > **Important:** This repository is a development and validation project. It is not yet a fully automated production release or OpenStack deployment system. Use only disposable test machines and test networking. Never run destructive runtime tests against production OVS services, sockets, databases, or networks.
 
-## 1. What problem are we trying to solve?
+## 1. What problem is being solved?
 
 Open vSwitch is software that helps a Linux machine or a cloud platform move network traffic between virtual machines and networks.
 
