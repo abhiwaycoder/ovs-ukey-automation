@@ -70,7 +70,7 @@ GitHub Actions artifact
 
 These are separate stages on purpose. A successful package build does not automatically mean that the package has been signed, installed, tested on a native RHEL kernel, or validated with OpenStack.
 
-## 4. What we have completed so far
+## 4. Work completed so far
 
 The status below reflects the evidence committed to this repository through **November 4, 2026**.
 
