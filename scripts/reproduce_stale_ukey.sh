@@ -410,7 +410,7 @@ echo "$FINAL_UKEY_OUTPUT"
 
 FINAL_UKEY_COUNT=$(echo "$FINAL_UKEY_OUTPUT" | \
     awk '
-        match($0, /\\(keys[[:space:]]+[0-9]+\\)/) {
+        match($0, /\(keys[[:space:]]+[0-9]+\)/) {
             value = substr($0, RSTART, RLENGTH)
             gsub(/[^0-9]/, "", value)
             total += value
