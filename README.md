@@ -100,6 +100,8 @@ See the detailed [build and test report](docs/BUILD_AND_TEST_RESULTS.md), [RPM s
 |---|---|
 | `app/main.py` | FastAPI portal: web page, build submission, and request-status endpoint. |
 | `scripts/build_rpm.sh` | Repeatable script that adds the stale-UKEY patch to a clean source RPM and builds RPMs. |
+| `scripts/capture_ovs_package_state.sh` | Read-only package, service, OVS and filesystem snapshot collector for disposable RHEL 8.10 VMs. |
+| `scripts/verify_ovs_package_state.py` | Verifies package-state snapshots, package NEVRA/signature, service status, database metadata, and optional zero-UKEY state. |
 | `scripts/install_runtime_runner.sh` | Installs the restricted self-hosted runtime entry point and its sudoers rule. |
 | `scripts/reproduce_stale_ukey.sh` | Runs the instrumented stale-UKEY reproduction using a root-owned host configuration. |
 | `config/ovs-ukey-ci.conf.example` | Example host-specific paths for the self-hosted runtime runner. |
@@ -307,6 +309,7 @@ Only run this on a disposable test system. Never point it at production OVS sock
 - [RPM signing and local DNF repository report](evidence/rpm-signing-validation-20261103.md) — signing and local repository checks.
 - [Historical baseline-versus-patched regression report](docs/OVS-STALE-UKEY-VALIDATION.md) — focused regression comparison.
 - [Native RHEL 8.10 runtime report](validation/ovs-2.17.8-rhel8-native-runtime-validation/README.md) — November 4 native test and its limitations.
+- [RHEL 8.10 package lifecycle runbook](docs/RHEL8_PACKAGE_LIFECYCLE.md) — signed repository setup, install/upgrade/rollback procedure, and automated snapshot verification.
 - [Actions workflows](https://github.com/abhiwaycoder/ovs-ukey-automation/actions) — build and test execution history.
 - [GitHub Releases](https://github.com/abhiwaycoder/ovs-ukey-automation/releases) — published project inputs and earlier RPM artifacts.
 
