@@ -61,7 +61,7 @@ def verify_manifest(snapshot: Path) -> list[str]:
             raise ValidationError(
                 f"Checksum mismatch for {filename}: expected {expected}, got {actual}"
             )
-        verified.append(filename)
+        verified.append(relative.name)
 
     if not verified:
         raise ValidationError("Checksum manifest contains no file entries")
