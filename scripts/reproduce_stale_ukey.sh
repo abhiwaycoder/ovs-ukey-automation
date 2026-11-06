@@ -138,7 +138,7 @@ echo "--- Create fresh veth pairs in root namespace ---"
 # Create the veth pairs in the root namespace, then move the
 # OVS-facing ends into ovs-vswitchd's namespace.
 
-if [ ! -s "$R/run/ovs-vswitchd.pid" ]; then
+if [ ! -s "$OVS_PID_FILE" ]; then
     echo "ERROR: disposable ovs-vswitchd PID file is missing or empty"
     exit 1
 fi
@@ -153,7 +153,7 @@ fi
 if [ ! -r "/proc/$OVS_PID/cmdline" ] ||
    ! tr '\0' ' ' < "/proc/$OVS_PID/cmdline" |
        grep -Fq "$DB_SOCKET"; then
-    echo "ERROR: PID file does not identify the runtime4 ovs-vswitchd"
+    echo "ERROR: PID file does not identify the configured disposable ovs-vswitchd"
     exit 1
 fi
 
