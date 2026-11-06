@@ -409,15 +409,29 @@ FINAL_UKEY_OUTPUT=$(ip netns exec "$NS" \
 echo "$FINAL_UKEY_OUTPUT"
 
 FINAL_UKEY_COUNT=$(echo "$FINAL_UKEY_OUTPUT" | \
-    awk '/keys/ {
-        gsub(/[^0-9]/, "", $3)
-        total += $3
-    }
-    END { print total+0 }')
+    awk '
+        match($0, /\\(keys[[:space:]]+[0-9]+\\)/) {
+            value = substr($0, RSTART, RLENGTH)
+            gsub(/[^0-9]/, "", value)
+            total += value
+            found++
+        }
+        END {
+            if (!found)
+                exit 2
+            print total
+        }
+    ')
 
 echo
 echo "Final UKEY count: $FINAL_UKEY_COUNT"
-echo "Final state recorded; newly created flows/UKEYs are not treated as a failure."
+
+if [[ "$FINAL_UKEY_COUNT" -ne 0 ]]; then
+    echo "FAIL: stale UKEYs remain after datapath-flow cleanup."
+    exit 1
+fi
+
+echo "PASS: final UKEY count is zero."
 
 echo
 echo "=================================================="
