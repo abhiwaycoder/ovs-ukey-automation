@@ -2,48 +2,149 @@ name: OVS UKEY Runtime Reproduction
 
 on:
   workflow_dispatch:
+    inputs:
+      confirm_disposable_runtime:
+        description: Confirm this runner uses only a disposable OVS test environment
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: read
+
+concurrency:
+  group: ovs-ukey-runtime-reproduction
+  cancel-in-progress: false
 
 jobs:
   reproduce:
     runs-on:
       - self-hosted
       - ovs-ukey
+    timeout-minutes: 45
+    env:
+      OVS_UKEY_EVIDENCE: /var/lib/ovs-ukey-ci/evidence
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Verify Python
+      - name: Confirm disposable runner and inspect prerequisites
+        shell: bash
         run: |
+          set -euo pipefail
+
+          if [[ "\${{ inputs.confirm_disposable_runtime }}" != "true" ]]; then
+            echo "Refusing to run: confirm that this is a disposable OVS test environment."
+            exit 1
+          fi
+
+          test "$RUNNER_OS" = "Linux"
+          test -x /usr/local/sbin/ovs-ukey-ci
+          test -d "$(dirname "$OVS_UKEY_EVIDENCE")"
+
+          echo "Runner user: $(id)"
+          echo "Kernel: $(uname -sr)"
+          echo "Memory:"
+          free -h
+          echo "Filesystem:"
+          df -h "$OVS_UKEY_EVIDENCE"
+          echo "Sudo authorization:"
+          sudo -n -l /usr/local/sbin/ovs-ukey-ci
+
+      - name: Verify Python
+        shell: bash
+        run: |
+          set -euo pipefail
           python3 --version
           python3 -m pip --version
 
       - name: Install Python test dependencies
+        shell: bash
         run: python3 -m pip install --user -r requirements.txt
 
       - name: Run real stale-UKEY reproduction
+        shell: bash
         run: sudo -n /usr/local/sbin/ovs-ukey-ci
 
-      - name: Verify real runtime evidence
+      - name: Verify and checksum runtime evidence
+        if: always()
+        shell: bash
         run: |
           set -euo pipefail
-          evidence=/var/lib/ovs-ukey-ci/evidence
 
-          test -f "$evidence/dp-final.txt"
-          test -s "$evidence/upcall-final.txt"
-          test -s "$evidence/ovs-vswitchd.log"
-          test -s "$evidence/stale-ukey-debug.log"
-          test -s "$evidence/coverage-final.txt"
+          test -d "$OVS_UKEY_EVIDENCE"
+          cd "$OVS_UKEY_EVIDENCE"
 
-          for count in 1 2 3 4; do
-            grep -q "missed_dumps=$count" "$evidence/stale-ukey-debug.log"
+          for file in \
+            dp-final.txt \
+            upcall-final.txt \
+            ovs-vswitchd.log \
+            stale-ukey-debug.log \
+            coverage-final.txt
+          do
+            test -f "$file"
           done
 
-          grep -q 'revalidate_missing_dp_flow' "$evidence/coverage-final.txt"
+          # The final datapath dump may be empty when no flows remain.
+          # All diagnostic and coverage outputs must be present.
+          test -s upcall-final.txt
+          test -s ovs-vswitchd.log
+          test -s stale-ukey-debug.log
+          test -s coverage-final.txt
+
+          for count in 1 2 3 4; do
+            grep -q "missed_dumps=$count" stale-ukey-debug.log
+          done
+
+          grep -q 'revalidate_missing_dp_flow' coverage-final.txt
+
+          sha256sum \
+            dp-final.txt \
+            upcall-final.txt \
+            ovs-vswitchd.log \
+            stale-ukey-debug.log \
+            coverage-final.txt \
+            > runtime-evidence-SHA256SUMS
+
+          sha256sum --check runtime-evidence-SHA256SUMS
 
       - name: Run pytest against real runtime evidence
+        if: success()
+        shell: bash
         env:
           OVS_UKEY_EVIDENCE: /var/lib/ovs-ukey-ci/evidence
         run: python3 -m pytest -v
+
+      - name: Upload runtime evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ovs-ukey-runtime-evidence-\${{ github.run_id }}
+          path: |
+            /var/lib/ovs-ukey-ci/evidence/dp-final.txt
+            /var/lib/ovs-ukey-ci/evidence/upcall-final.txt
+            /var/lib/ovs-ukey-ci/evidence/ovs-vswitchd.log
+            /var/lib/ovs-ukey-ci/evidence/stale-ukey-debug.log
+            /var/lib/ovs-ukey-ci/evidence/coverage-final.txt
+            /var/lib/ovs-ukey-ci/evidence/runtime-evidence-SHA256SUMS
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Publish runtime summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "# OVS UKEY runtime reproduction"
+            echo
+            echo "- Runner: $RUNNER_NAME"
+            echo "- Kernel: $(uname -sr)"
+            echo "- Job result: \${{ job.status }}"
+            echo "- Evidence directory: $OVS_UKEY_EVIDENCE"
+            echo
+            if [[ -f "$OVS_UKEY_EVIDENCE/runtime-evidence-SHA256SUMS" ]]; then
+              echo "## Evidence checksums"
+              cat "$OVS_UKEY_EVIDENCE/runtime-evidence-SHA256SUMS"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
