@@ -100,6 +100,9 @@ See the detailed [build and test report](docs/BUILD_AND_TEST_RESULTS.md), [RPM s
 |---|---|
 | `app/main.py` | FastAPI portal: web page, build submission, and request-status endpoint. |
 | `scripts/build_rpm.sh` | Repeatable script that adds the stale-UKEY patch to a clean source RPM and builds RPMs. |
+| `scripts/install_runtime_runner.sh` | Installs the restricted self-hosted runtime entry point and its sudoers rule. |
+| `scripts/reproduce_stale_ukey.sh` | Runs the instrumented stale-UKEY reproduction using a root-owned host configuration. |
+| `config/ovs-ukey-ci.conf.example` | Example host-specific paths for the self-hosted runtime runner. |
 | `.github/workflows/portal-dispatch.yml` | Builds RPMs when the portal sends a repository-dispatch event or when started manually. |
 | `.github/workflows/ovs-rpm-check.yml` | Builds the RPM with the spec test suite (%check) enabled. |
 | `.github/workflows/runtime-reproduction.yml` | Manually runs the real stale-UKEY reproduction on a specially configured self-hosted runner. |
@@ -108,6 +111,7 @@ See the detailed [build and test report](docs/BUILD_AND_TEST_RESULTS.md), [RPM s
 | `evidence/` | Test reports, logs, checksums, and build/signing evidence. |
 | `validation/` | Runtime validation reports and raw runtime evidence. |
 | `docs/` | Detailed build, test, and operational documentation. |
+| `scripts/ovs-ukey-ci` | Fixed privileged entry point used by the self-hosted workflow. |
 | `keys/RPM-GPG-KEY-OVS-STALE-UKEY` | Public key for verifying the project's signed RPMs. It is not a private signing key. |
 
 ## 6. Set up and run the web portal
@@ -298,6 +302,7 @@ Only run this on a disposable test system. Never point it at production OVS sock
 
 - [Build and test results](docs/BUILD_AND_TEST_RESULTS.md) — test history, package build results, and validation scope.
 - [Repeatable RPM build instructions](docs/REPEATABLE_RPM_BUILD.md) — build inputs, script options, workflow behavior, and signing notes.
+- [Self-hosted runtime runner setup](docs/SELF_HOSTED_RUNTIME_RUNNER.md) — host prerequisites, restricted installation, configuration, and evidence collection.
 - [RPM %check validation report](evidence/rpm-check-validation-41572770829.md) — November 3 hosted test results.
 - [RPM signing and local DNF repository report](evidence/rpm-signing-validation-20261103.md) — signing and local repository checks.
 - [Historical baseline-versus-patched regression report](docs/OVS-STALE-UKEY-VALIDATION.md) — focused regression comparison.
