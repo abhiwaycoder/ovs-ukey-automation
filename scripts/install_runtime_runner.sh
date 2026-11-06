@@ -50,6 +50,7 @@ done
 
 [[ "$EUID" -eq 0 ]] || die "Run this installer with sudo."
 [[ -n "$RUNNER_USER" ]] || die "--runner-user is required"
+[[ "$RUNNER_USER" =~ ^[A-Za-z0-9_.-]+$ ]] || die "Runner username contains unsupported characters"
 id "$RUNNER_USER" >/dev/null 2>&1 || die "Runner user does not exist: $RUNNER_USER"
 
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -78,6 +79,7 @@ if [[ ! -e "$CONFIG_DEST" ]]; then
     install -o root -g root -m 0600 "$CONFIG_SOURCE" "$CONFIG_DEST"
     sed -i "s/^OVS_UKEY_RUNNER_GROUP=.*/OVS_UKEY_RUNNER_GROUP=\"$RUNNER_GROUP\"/" "$CONFIG_DEST"
 else
+    [[ ! -L "$CONFIG_DEST" ]] || die "$CONFIG_DEST must not be a symlink"
     [[ -f "$CONFIG_DEST" ]] || die "$CONFIG_DEST exists and is not a regular file"
     [[ "$(stat -c '%u' "$CONFIG_DEST")" == "0" ]] || die "$CONFIG_DEST must be owned by root"
     config_mode="$(stat -c '%a' "$CONFIG_DEST")"
@@ -85,8 +87,11 @@ else
 fi
 
 if [[ -e "$SUDOERS_DEST" ]]; then
+    [[ ! -L "$SUDOERS_DEST" ]] || die "$SUDOERS_DEST must not be a symlink"
     [[ -f "$SUDOERS_DEST" ]] || die "$SUDOERS_DEST exists and is not a regular file"
     grep -Fxq "$EXPECTED_RULE" "$SUDOERS_DEST" || die "$SUDOERS_DEST exists with a different rule; review it manually"
+    unexpected_rules="$(grep -Ev '^[[:space:]]*(#|$)' "$SUDOERS_DEST" | grep -Fvx "$EXPECTED_RULE" || true)"
+    [[ -z "$unexpected_rules" ]] || die "$SUDOERS_DEST contains unexpected sudoers entries; review it manually"
 else
     sudoers_tmp="$(mktemp)"
     trap 'rm -f "$sudoers_tmp"' EXIT
