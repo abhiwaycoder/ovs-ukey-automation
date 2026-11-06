@@ -34,7 +34,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          if [[ "\${{ inputs.confirm_disposable_runtime }}" != "true" ]]; then
+          if [[ "${{ inputs.confirm_disposable_runtime }}" != "true" ]]; then
             echo "Refusing to run: confirm that this is a disposable OVS test environment."
             exit 1
           fi
@@ -120,7 +120,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ovs-ukey-runtime-evidence-\${{ github.run_id }}
+          name: ovs-ukey-runtime-evidence-${{ github.run_id }}
           path: |
             /var/lib/ovs-ukey-ci/evidence/dp-final.txt
             /var/lib/ovs-ukey-ci/evidence/upcall-final.txt
@@ -140,7 +140,7 @@ jobs:
             echo
             echo "- Runner: $RUNNER_NAME"
             echo "- Kernel: $(uname -sr)"
-            echo "- Job result: \${{ job.status }}"
+            echo "- Job result: ${{ job.status }}"
             echo "- Evidence directory: $OVS_UKEY_EVIDENCE"
             echo
             if [[ -f "$OVS_UKEY_EVIDENCE/runtime-evidence-SHA256SUMS" ]]; then
