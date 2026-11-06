@@ -76,7 +76,7 @@ OUTPUT_DIR=$(realpath -m -- "$OUTPUT_DIR")
 [[ -s "$REPO_DIR/repodata/repomd.xml.asc" ]] || die "Missing detached repomd.xml signature"
 [[ ! -e "$OUTPUT_DIR" ]] || die "Output directory already exists: $OUTPUT_DIR"
 
-for command in rpm rpmkeys gpg sha256sum find sort xargs tar realpath; do
+for command in rpm rpmkeys gpg sha256sum find sort xargs tar realpath mktemp awk; do
     command -v "$command" >/dev/null 2>&1 || die "Required command not found: $command"
 done
 
@@ -95,7 +95,7 @@ mapfile -d '' SOURCE_RPMS < <(
 [[ "${#BINARY_RPMS[@]}" -eq 9 ]] ||
     die "Expected exactly 9 signed binary RPMs in local repository; found ${#BINARY_RPMS[@]}"
 [[ "${#SOURCE_RPMS[@]}" -eq 1 ]] ||
-    die "Expected exactly 1 signed source RPM; found ${#SOURCE_RPMS[@]"
+    die "Expected exactly 1 signed source RPM; found ${#SOURCE_RPMS[@]}"
 
 if [[ -s "$REPO_DIR/SHA256SUMS" ]]; then
     (
@@ -122,6 +122,8 @@ rpmkeys --dbpath "$RPMDB" --import "$PUBLIC_KEY"
 
 for rpm_file in "${BINARY_RPMS[@]}" "${SOURCE_RPMS[@]}"; do
     echo "Verifying signed package: $rpm_file"
+    signature=$(rpm -qp --qf '%{SIGPGP:pgpsig}\\n' "$rpm_file") || die "Cannot read RPM signature: $rpm_file"
+    [[ -n "$signature" && "$signature" != "(none)" ]] || die "RPM has no OpenPGP signature: $rpm_file"
     rpmkeys --dbpath "$RPMDB" --checksig --verbose "$rpm_file"
 done
 
@@ -158,7 +160,7 @@ INFO
 
 ARCHIVE="$OUTPUT_DIR/ovs-ukey-signed-el8-repository-${TAG}.tar.gz"
 tar -C "$TMP" -czf "$ARCHIVE" "$(basename "$BUNDLE")"
-sha256sum "$ARCHIVE" > "$ARCHIVE.sha256"
+(cd "$OUTPUT_DIR" && sha256sum "$(basename "$ARCHIVE")" > "$(basename "$ARCHIVE").sha256")
 
 printf '\nLocal verification and bundle creation: PASS\n'
 printf 'Binary RPMs verified: %s\n' "${#BINARY_RPMS[@]}"
