@@ -20,7 +20,6 @@ REQUIRED_FILES = (
     "ovs-topology.txt",
     "ovs-database-metadata.txt",
     "ovs-binary-checksums.txt",
-    "SHA256SUMS",
 )
 
 
