@@ -1,23 +1,73 @@
-#!/bin/bash
-set -euo pipefail
+#!/usr/bin/env bash
+set -Eeuo pipefail
 
-R=/root/ovs-debug-runtime4
-NS=ovs-ukey-ns
-BR=ukey-br
-OVS_VSCTL=/root/ovs-3.5.3/utilities/ovs-vsctl
-DB=unix:$R/run/db.sock
-APP=/root/ovs-3.5.3/utilities/ovs-appctl
-OVS_VSWITCHD=/root/ovs-3.5.3/vswitchd/.libs/lt-ovs-vswitchd
+# A root-owned configuration file makes the same reproduction script usable
+# on a dedicated runner without baking one workstation's directory layout in.
+CONFIG_FILE="${OVS_UKEY_CI_CONFIG_FILE:-/etc/ovs-ukey-ci.conf}"
+if [[ -f "$CONFIG_FILE" ]]; then
+    [[ "$EUID" -eq 0 ]] || {
+        echo "ERROR: the runtime reproduction must run as root." >&2
+        exit 1
+    }
+    config_owner="$(stat -c '%u' "$CONFIG_FILE")"
+    config_mode="$(stat -c '%a' "$CONFIG_FILE")"
+    [[ "$config_owner" == "0" ]] || {
+        echo "ERROR: $CONFIG_FILE must be owned by root." >&2
+        exit 1
+    }
+    if (( (8#$config_mode & 0022) != 0 )); then
+        echo "ERROR: $CONFIG_FILE must not be group- or world-writable." >&2
+        exit 1
+    fi
+    # The file is trusted root-owned shell configuration.
+    # shellcheck source=/dev/null
+    source "$CONFIG_FILE"
+fi
 
-CTL="$R/run/ovs-vswitchd.ctl"
-LOG="$R/logs/ovs-vswitchd.log"
-REPO="$(cd "$(dirname "$0")/.." && pwd)"
-EVIDENCE="/var/lib/ovs-ukey-ci/evidence"
+[[ "$EUID" -eq 0 ]] || {
+    echo "ERROR: run the runtime reproduction through the restricted sudo entry point." >&2
+    exit 1
+}
 
-export LD_LIBRARY_PATH="/root/ovs-3.5.3/ovsdb/.libs:/root/ovs-3.5.3/ofproto/.libs:/root/ovs-3.5.3/lib/.libs"
+R="${OVS_UKEY_RUNTIME_ROOT:-/root/ovs-debug-runtime4}"
+SOURCE_ROOT="${OVS_UKEY_SOURCE_ROOT:-/root/ovs-3.5.3}"
+NS="${OVS_UKEY_NETWORK_NAMESPACE:-ovs-ukey-ns}"
+BR="${OVS_UKEY_BRIDGE:-ukey-br}"
+OVS_VSCTL="${OVS_UKEY_VSCTL:-$SOURCE_ROOT/utilities/ovs-vsctl}"
+DB_SOCKET="${OVS_UKEY_DB_SOCKET:-$R/run/db.sock}"
+DB="unix:$DB_SOCKET"
+APP="${OVS_UKEY_APPCTL:-$SOURCE_ROOT/utilities/ovs-appctl}"
+OVS_VSWITCHD="${OVS_UKEY_VSWITCHD:-$SOURCE_ROOT/vswitchd/.libs/lt-ovs-vswitchd}"
+OVS_PID_FILE="${OVS_UKEY_PID_FILE:-$R/run/ovs-vswitchd.pid}"
+CTL="${OVS_UKEY_CONTROL_SOCKET:-$R/run/ovs-vswitchd.ctl}"
+LOG="${OVS_UKEY_LOG_FILE:-$R/logs/ovs-vswitchd.log}"
+LIB="${OVS_UKEY_LIBOFPROTO:-$SOURCE_ROOT/ofproto/.libs/libofproto-3.5.so.0.0.3}"
+EVIDENCE="${OVS_UKEY_EVIDENCE:-/var/lib/ovs-ukey-ci/evidence}"
+RUNNER_GROUP="${OVS_UKEY_RUNNER_GROUP:-gha-runner}"
+
+DEFAULT_LD_LIBRARY_PATH="$SOURCE_ROOT/ovsdb/.libs:$SOURCE_ROOT/ofproto/.libs:$SOURCE_ROOT/lib/.libs"
+export LD_LIBRARY_PATH="${OVS_UKEY_LD_LIBRARY_PATH:-$DEFAULT_LD_LIBRARY_PATH}${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+
+for required_path in "$R/run" "$R/logs" "$SOURCE_ROOT" "$LIB"; do
+    [[ -e "$required_path" ]] || {
+        echo "ERROR: configured runtime/build path does not exist: $required_path" >&2
+        exit 1
+    }
+done
+
+for executable in "$OVS_VSCTL" "$APP" "$OVS_VSWITCHD"; do
+    [[ -x "$executable" ]] || {
+        echo "ERROR: configured OVS executable is missing or not executable: $executable" >&2
+        exit 1
+    }
+done
+
+getent group "$RUNNER_GROUP" >/dev/null || {
+    echo "ERROR: evidence group does not exist: $RUNNER_GROUP" >&2
+    exit 1
+}
 
 mkdir -p "$EVIDENCE"
-mkdir -p /usr/local/var/run/openvswitch
 
 echo "=================================================="
 echo "1. VERIFY INSTRUMENTED OVS"
@@ -25,7 +75,7 @@ echo "=================================================="
 
 "$OVS_VSWITCHD" --version | head -1
 
-LIB="/root/ovs-3.5.3/ofproto/.libs/libofproto-3.5.so.0.0.3"
+# LIB is resolved from OVS_UKEY_LIBOFPROTO or the configured source root above.
 
 if [ ! -f "$LIB" ]; then
     echo "FAIL: instrumented libofproto not found: $LIB"
@@ -88,12 +138,12 @@ echo "--- Create fresh veth pairs in root namespace ---"
 # Create the veth pairs in the root namespace, then move the
 # OVS-facing ends into ovs-vswitchd's namespace.
 
-if [ ! -s "$R/run/ovs-vswitchd.pid" ]; then
+if [ ! -s "$OVS_PID_FILE" ]; then
     echo "ERROR: disposable ovs-vswitchd PID file is missing or empty"
     exit 1
 fi
 
-OVS_PID="$(cat "$R/run/ovs-vswitchd.pid")"
+OVS_PID="$(cat "$OVS_PID_FILE")"
 
 if [ -z "$OVS_PID" ] || ! [[ "$OVS_PID" =~ ^[0-9]+$ ]]; then
     echo "ERROR: invalid disposable ovs-vswitchd PID"
@@ -102,8 +152,8 @@ fi
 
 if [ ! -r "/proc/$OVS_PID/cmdline" ] ||
    ! tr '\0' ' ' < "/proc/$OVS_PID/cmdline" |
-       grep -Fq "$R/run/db.sock"; then
-    echo "ERROR: PID file does not identify the runtime4 ovs-vswitchd"
+       grep -Fq "$DB_SOCKET"; then
+    echo "ERROR: PID file does not identify the configured disposable ovs-vswitchd"
     exit 1
 fi
 
@@ -359,15 +409,29 @@ FINAL_UKEY_OUTPUT=$(ip netns exec "$NS" \
 echo "$FINAL_UKEY_OUTPUT"
 
 FINAL_UKEY_COUNT=$(echo "$FINAL_UKEY_OUTPUT" | \
-    awk '/keys/ {
-        gsub(/[^0-9]/, "", $3)
-        total += $3
-    }
-    END { print total+0 }')
+    awk '
+        match($0, /\(keys[[:space:]]+[0-9]+\)/) {
+            value = substr($0, RSTART, RLENGTH)
+            gsub(/[^0-9]/, "", value)
+            total += value
+            found++
+        }
+        END {
+            if (!found)
+                exit 2
+            print total
+        }
+    ')
 
 echo
 echo "Final UKEY count: $FINAL_UKEY_COUNT"
-echo "Final state recorded; newly created flows/UKEYs are not treated as a failure."
+
+if [[ "$FINAL_UKEY_COUNT" -ne 0 ]]; then
+    echo "FAIL: stale UKEYs remain after datapath-flow cleanup."
+    exit 1
+fi
+
+echo "PASS: final UKEY count is zero."
 
 echo
 echo "=================================================="
@@ -399,7 +463,7 @@ tail -n +"$((START_LINE + 1))" "$LOG" |
 echo
 # Evidence is generated by the root-owned reproduction but consumed
 # by the unprivileged GitHub Actions runner.
-chgrp -R gha-runner "$EVIDENCE"
+chgrp -R "$RUNNER_GROUP" "$EVIDENCE"
 chmod 0750 "$EVIDENCE"
 find "$EVIDENCE" -type f -exec chmod 0640 {} +
 

@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Fixed sudo entry point installed by install_runtime_runner.sh.
+set -Eeuo pipefail
+exec /usr/bin/bash /usr/local/libexec/ovs-ukey-ci/reproduce_stale_ukey.sh "$@"

@@ -1,0 +1,25 @@
+# Root-owned configuration for the disposable OVS UKEY self-hosted runner.
+# Edit every path to match the dedicated test host before running the workflow.
+#
+# The evidence path must match OVS_UKEY_EVIDENCE in
+# .github/workflows/runtime-reproduction.yml.
+
+OVS_UKEY_RUNTIME_ROOT="/opt/ovs-ukey-ci/runtime"
+OVS_UKEY_SOURCE_ROOT="/opt/ovs-ukey-ci/ovs-source"
+OVS_UKEY_NETWORK_NAMESPACE="ovs-ukey-ns"
+OVS_UKEY_BRIDGE="ukey-br"
+OVS_UKEY_DB_SOCKET="/opt/ovs-ukey-ci/runtime/run/db.sock"
+OVS_UKEY_PID_FILE="/opt/ovs-ukey-ci/runtime/run/ovs-vswitchd.pid"
+OVS_UKEY_CONTROL_SOCKET="/opt/ovs-ukey-ci/runtime/run/ovs-vswitchd.ctl"
+OVS_UKEY_LOG_FILE="/opt/ovs-ukey-ci/runtime/logs/ovs-vswitchd.log"
+OVS_UKEY_VSCTL="/opt/ovs-ukey-ci/ovs-source/utilities/ovs-vsctl"
+OVS_UKEY_APPCTL="/opt/ovs-ukey-ci/ovs-source/utilities/ovs-appctl"
+OVS_UKEY_VSWITCHD="/opt/ovs-ukey-ci/ovs-source/vswitchd/.libs/lt-ovs-vswitchd"
+OVS_UKEY_LIBOFPROTO="/opt/ovs-ukey-ci/ovs-source/ofproto/.libs/libofproto-3.5.so.0.0.3"
+OVS_UKEY_EVIDENCE="/var/lib/ovs-ukey-ci/evidence"
+OVS_UKEY_RUNNER_GROUP="gha-runner"
+
+# Optional: provide a complete library search path when the OVS build uses
+# additional directories. Otherwise the script uses ovsdb/.libs,
+# ofproto/.libs, and lib/.libs under OVS_UKEY_SOURCE_ROOT.
+# OVS_UKEY_LD_LIBRARY_PATH="/opt/ovs-ukey-ci/ovs-source/ovsdb/.libs:/opt/ovs-ukey-ci/ovs-source/ofproto/.libs:/opt/ovs-ukey-ci/ovs-source/lib/.libs"
