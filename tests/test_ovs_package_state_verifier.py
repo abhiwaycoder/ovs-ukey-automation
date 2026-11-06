@@ -52,7 +52,14 @@ def _snapshot(directory: Path, *, nevra=EXPECTED_NEVRA, ukey_count=0, db_owner="
         "ovs-database-metadata",
         f"regular file | {db_owner} | mode={db_mode} | size=1234 | /etc/openvswitch/conf.db\n",
     )
-    _write_capture(directory, "ovs-binary-checksums", "abc  /usr/bin/ovs-vswitchd\n")
+    _write_capture(
+        directory,
+        "ovs-binary-checksums",
+        "ovs-vswitchd -> /usr/sbin/ovs-vswitchd\n"
+        "ovsdb-server -> /usr/sbin/ovsdb-server\n"
+        "ovs-vsctl -> /usr/bin/ovs-vsctl\n"
+        "ovs-appctl -> /usr/bin/ovs-appctl\n",
+    )
     _write_capture(
         directory,
         "ovs-upcall-state",
