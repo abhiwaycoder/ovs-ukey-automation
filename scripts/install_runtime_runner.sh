@@ -75,7 +75,9 @@ install -d -o root -g root -m 0755 "$LIBEXEC_DIR"
 install -o root -g root -m 0755 "$REPRO_SCRIPT" "$LIBEXEC_DIR/reproduce_stale_ukey.sh"
 install -o root -g root -m 0755 "$WRAPPER_SOURCE" /usr/local/sbin/ovs-ukey-ci
 
-if [[ ! -e "$CONFIG_DEST" ]]; then
+if [[ -L "$CONFIG_DEST" ]]; then
+    die "$CONFIG_DEST must not be a symlink"
+elif [[ ! -e "$CONFIG_DEST" ]]; then
     install -o root -g root -m 0600 "$CONFIG_SOURCE" "$CONFIG_DEST"
     sed -i "s/^OVS_UKEY_RUNNER_GROUP=.*/OVS_UKEY_RUNNER_GROUP=\"$RUNNER_GROUP\"/" "$CONFIG_DEST"
 else
@@ -89,6 +91,8 @@ fi
 if [[ -e "$SUDOERS_DEST" ]]; then
     [[ ! -L "$SUDOERS_DEST" ]] || die "$SUDOERS_DEST must not be a symlink"
     [[ -f "$SUDOERS_DEST" ]] || die "$SUDOERS_DEST exists and is not a regular file"
+    [[ "$(stat -c '%u' "$SUDOERS_DEST")" == "0" ]] || die "$SUDOERS_DEST must be owned by root"
+    [[ "$(stat -c '%a' "$SUDOERS_DEST")" == "440" ]] || die "$SUDOERS_DEST must have mode 0440"
     grep -Fxq "$EXPECTED_RULE" "$SUDOERS_DEST" || die "$SUDOERS_DEST exists with a different rule; review it manually"
     unexpected_rules="$(grep -Ev '^[[:space:]]*(#|$)' "$SUDOERS_DEST" | grep -Fvx "$EXPECTED_RULE" || true)"
     [[ -z "$unexpected_rules" ]] || die "$SUDOERS_DEST contains unexpected sudoers entries; review it manually"
