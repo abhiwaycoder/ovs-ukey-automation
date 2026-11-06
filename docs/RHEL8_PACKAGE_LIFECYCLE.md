@@ -187,6 +187,33 @@ diff -u \
   /var/tmp/ovs-ukey-lifecycle/after-upgrade/ovs-database-metadata.txt
 ```
 
+### Automated snapshot verification
+
+The repository includes `scripts/verify_ovs_package_state.py` to validate a captured post-transaction snapshot. It checks the SHA-256 manifest, confirms RHEL 8.10, verifies the installed package NEVRA and reported signature, checks `rpm -V`, confirms active OVS services, validates the database metadata, and verifies that checksums were captured for all four OVS executables.
+
+For a package installation or upgrade:
+
+```bash
+python3 scripts/verify_ovs_package_state.py \
+  --snapshot /var/tmp/ovs-ukey-lifecycle/after-install \
+  --expected-nevra openvswitch2.17-2.17.0-106.el8.x86_64 \
+  --require-bridge br-ukey-runtime
+```
+
+For an upgrade or rollback, compare the OVS database file's type, owner/group, and mode with the snapshot taken before the transaction:
+
+```bash
+python3 scripts/verify_ovs_package_state.py \
+  --snapshot /var/tmp/ovs-ukey-lifecycle/after-upgrade \
+  --expected-nevra openvswitch2.17-2.17.0-106.el8.x86_64 \
+  --require-bridge br-ukey-runtime \
+  --compare-database-with /var/tmp/ovs-ukey-lifecycle/before-upgrade
+```
+
+For a runtime snapshot after stale-flow cleanup, add `--assert-zero-ukeys` to require every reported final UKEY count to be zero. For rollback, set `--expected-nevra` to the exact previously approved baseline NEVRA.
+
+The verifier checks that an RPM signature is reported in the installed package metadata. The actual transaction must still be performed with DNF package and repository signature verification enabled (`gpgcheck=1`, `repo_gpgcheck=1`); the verifier does not replace cryptographic verification by DNF.
+
 Check these outcomes for every stage:
 
 - Expected OVS package NEVRA and signature are installed.
