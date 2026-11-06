@@ -48,7 +48,7 @@ jobs:
           echo "Memory:"
           free -h
           echo "Filesystem:"
-          df -h "$OVS_UKEY_EVIDENCE"
+          df -h "$(dirname "$OVS_UKEY_EVIDENCE")"
           echo "Sudo authorization:"
           sudo -n -l /usr/local/sbin/ovs-ukey-ci
 
