@@ -198,8 +198,18 @@ def validate_snapshot(
             )
         checks.append("conf.db type, ownership, and mode preserved")
 
-    require_command_success(snapshot, "ovs-binary-checksums.txt")
-    checks.append("OVS executable checksum capture completed")
+    binary_state = require_command_success(snapshot, "ovs-binary-checksums.txt")
+    required_binaries = ("ovs-vswitchd", "ovsdb-server", "ovs-vsctl", "ovs-appctl")
+    missing_binaries = [
+        name for name in required_binaries
+        if f"{name} -> " not in binary_state
+    ]
+    if missing_binaries:
+        raise ValidationError(
+            "OVS executable checksum capture is missing: "
+            + ", ".join(missing_binaries)
+        )
+    checks.append("Checksums captured for all four OVS executables")
 
     if assert_zero_ukeys:
         upcall = require_command_success(snapshot, "ovs-upcall-state.txt")
