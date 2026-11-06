@@ -122,7 +122,7 @@ rpmkeys --dbpath "$RPMDB" --import "$PUBLIC_KEY"
 
 for rpm_file in "${BINARY_RPMS[@]}" "${SOURCE_RPMS[@]}"; do
     echo "Verifying signed package: $rpm_file"
-    signature=$(rpm -qp --qf '%{SIGPGP:pgpsig}\\n' "$rpm_file") || die "Cannot read RPM signature: $rpm_file"
+    signature=$(rpm -qp --qf '%{SIGPGP:pgpsig}\n' "$rpm_file") || die "Cannot read RPM signature: $rpm_file"
     [[ -n "$signature" && "$signature" != "(none)" ]] || die "RPM has no OpenPGP signature: $rpm_file"
     rpmkeys --dbpath "$RPMDB" --checksig --verbose "$rpm_file"
 done
