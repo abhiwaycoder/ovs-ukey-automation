@@ -83,7 +83,7 @@ def test_ovs_evidence_files_exist():
 
 def test_final_upcall_state_contains_no_stale_ukeys():
     upcall = read_required(EVIDENCE_ROOT / "upcall-final.txt")
-    key_counts = re.findall(r"\\(keys\\s+(\\d+)\\)", upcall)
+    key_counts = re.findall(r"\(keys\s+(\d+)\)", upcall)
     assert key_counts, "No UKEY key-count records found in final upcall output"
     assert all(int(count) == 0 for count in key_counts), (
         f"Expected every final UKEY count to be zero, got {key_counts}"
