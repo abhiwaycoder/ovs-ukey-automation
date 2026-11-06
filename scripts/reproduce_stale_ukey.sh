@@ -48,9 +48,16 @@ RUNNER_GROUP="${OVS_UKEY_RUNNER_GROUP:-gha-runner}"
 DEFAULT_LD_LIBRARY_PATH="$SOURCE_ROOT/ovsdb/.libs:$SOURCE_ROOT/ofproto/.libs:$SOURCE_ROOT/lib/.libs"
 export LD_LIBRARY_PATH="${OVS_UKEY_LD_LIBRARY_PATH:-$DEFAULT_LD_LIBRARY_PATH}${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 
-for required_path in "$R/run" "$R/logs" "$SOURCE_ROOT" "$OVS_VSCTL" "$APP" "$OVS_VSWITCHD" "$LIB"; do
+for required_path in "$R/run" "$R/logs" "$SOURCE_ROOT" "$LIB"; do
     [[ -e "$required_path" ]] || {
         echo "ERROR: configured runtime/build path does not exist: $required_path" >&2
+        exit 1
+    }
+done
+
+for executable in "$OVS_VSCTL" "$APP" "$OVS_VSWITCHD"; do
+    [[ -x "$executable" ]] || {
+        echo "ERROR: configured OVS executable is missing or not executable: $executable" >&2
         exit 1
     }
 done
@@ -68,7 +75,7 @@ echo "=================================================="
 
 "$OVS_VSWITCHD" --version | head -1
 
-LIB="/root/ovs-3.5.3/ofproto/.libs/libofproto-3.5.so.0.0.3"
+# LIB is resolved from OVS_UKEY_LIBOFPROTO or the configured source root above.
 
 if [ ! -f "$LIB" ]; then
     echo "FAIL: instrumented libofproto not found: $LIB"
