@@ -53,6 +53,7 @@ def test_runtime_paths_are_configurable_and_pid_database_checks_use_them():
         assert setting in content
     assert 'cat "$OVS_PID_FILE"' in content
     assert 'grep -Fq "$DB_SOCKET"' in content
+    assert 'if [[ "$FINAL_UKEY_COUNT" -ne 0 ]]; then' in content
     assert 'chgrp -R "$RUNNER_GROUP" "$EVIDENCE"' in content
     assert 'LIB="/root/ovs-3.5.3/ofproto/.libs/libofproto-3.5.so.0.0.3"' not in content
 
